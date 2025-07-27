@@ -1,6 +1,5 @@
 package com.jamesmcdonald.backend.account;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
