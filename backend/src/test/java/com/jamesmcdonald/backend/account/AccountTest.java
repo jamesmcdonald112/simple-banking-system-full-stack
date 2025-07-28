@@ -26,8 +26,8 @@ class AccountTest {
                 "Card number should pass the Luhn isValid method");
 
         assertTrue(
-                account.getPin() >= 0 && account.getPin() <= 9999,
-                "PIN should be between 0000 and 9999");
+                account.getPin().matches("\\d{4}"),
+                "PIN should be a 4-digit numeric string");
 
         assertEquals(
                 0,

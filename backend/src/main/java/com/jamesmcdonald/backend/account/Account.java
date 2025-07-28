@@ -24,7 +24,7 @@ public class Account {
     private final String cardNumber;
 
     @Column(nullable = false)
-    private final int pin;
+    private final String pin;
 
     @Column(nullable = false)
     private int balance;
@@ -36,7 +36,7 @@ public class Account {
     public Account() {
         // Placeholders to satisfy JPA for final instance variables.
         this.cardNumber = null;
-        this.pin = -1;
+        this.pin = null;
     }
 
     /**
@@ -46,7 +46,7 @@ public class Account {
      * @param pin new pin
      * @param balance balance of 0
      */
-    private Account(String cardNumber, int pin, int balance) {
+    private Account(String cardNumber, String pin, int balance) {
         this.cardNumber = cardNumber;
         this.pin = pin;
         this.balance = balance;
@@ -73,7 +73,7 @@ public class Account {
         return cardNumber;
     }
 
-    public int getPin() {
+    public String getPin() {
         return pin;
     }
 
