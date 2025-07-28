@@ -1,6 +1,11 @@
 package com.jamesmcdonald.backend.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CardNumberGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(CardNumberGenerator.class);
 
     /**
      * Generates the 16 digit card number.
@@ -20,7 +25,10 @@ public class CardNumberGenerator {
         int checksum = generateChecksum(sb.toString());
         sb.append(checksum);
 
-        return sb.toString();
+        String cardNumber = sb.toString();
+        log.debug("Generated card number {}", cardNumber);
+
+        return cardNumber;
     }
 
     /**
