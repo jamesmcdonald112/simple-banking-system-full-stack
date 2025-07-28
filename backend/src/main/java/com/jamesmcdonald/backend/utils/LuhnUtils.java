@@ -1,8 +1,13 @@
 package com.jamesmcdonald.backend.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 
 public class LuhnUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(LuhnUtils.class);
 
     /**
      * Applies the Luhn algorithm to check whether a card number is valid.
@@ -12,10 +17,10 @@ public class LuhnUtils {
      * @return True if valid; false otherwise
      */
     public static boolean isValid(String cardNumber) {
+        validateNumericInput(cardNumber, "Card number");
+
         int[] digits = convertCardAsStringToIntArray(cardNumber);
-
         int checksumDigit = digits[digits.length - 1];
-
         // Remove the checksum digit for calculation
         digits = Arrays.copyOf(digits, digits.length - 1);
 
@@ -35,7 +40,10 @@ public class LuhnUtils {
             total += currentDigit;
         }
 
-        return (total + checksumDigit) % 10 == 0;
+        boolean isValidChecksum = (total + checksumDigit) % 10 == 0;
+        log.debug("Luhn validation result for card [{}]: {}", cardNumber, isValidChecksum);
+
+        return isValidChecksum;
     }
 
     /**
@@ -60,6 +68,8 @@ public class LuhnUtils {
      * @return The checksum digit (0–9) that should be appended to make the full number valid.
      */
     public static int calculateChecksum(String accountIdentifierAndBin) {
+        validateNumericInput(accountIdentifierAndBin, "Account identifier and BIN");
+
         int[] digits = convertCardAsStringToIntArray(accountIdentifierAndBin);
 
         int total = 0;
@@ -78,6 +88,8 @@ public class LuhnUtils {
         }
 
         int checksum = (10 -(total % 10)) % 10;
+        log.debug("Calculated Luhn checksum for [{}] is {}", accountIdentifierAndBin, checksum);
+
         return checksum;
     }
 
@@ -95,5 +107,19 @@ public class LuhnUtils {
             digits[i] = Character.getNumericValue(chars[i]);
         }
         return digits;
+    }
+
+    /**
+     * Validates that the given input string is non-null and contains only numeric characters.
+     *
+     * @param input     The string to validate.
+     * @param fieldName The name of the field being validated (used for logging and error messages).
+     * @throws IllegalArgumentException if the input is null or contains non-numeric characters.
+     */
+    private static void validateNumericInput(String input, String fieldName) {
+        if (input == null || !input.matches("\\d+")) {
+            log.warn("[{}] must be non-null and numeric: {}", fieldName, input);
+            throw new IllegalArgumentException(fieldName + " must be a non-null numeric string");
+        }
     }
 }
