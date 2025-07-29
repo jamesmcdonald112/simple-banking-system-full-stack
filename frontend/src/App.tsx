@@ -1,24 +1,22 @@
 
-import { useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import CreateAccount from './pages/CreateAccount'
+import NotFound from './pages/NotFound'
 
 function App() {
-  const [message, setMessage] = useState('');
-
-
-  useEffect(() => {
-    fetch("http://localhost:8080/api/test")
-      .then(res => res.text())
-      .then(text => setMessage(text))
-  },[])
-
   return (
-    <>
-    <h1 className="text-3xl font-bold underline">
-      {message}
-    </h1>
-     
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Dashboard />}/>
+        <Route path='/dashboard' element={<Dashboard />}/>
+        <Route path='/login' element={<Login />}/>
+        <Route path='/create-account' element={<CreateAccount />}/>
+        <Route path='*' element={<NotFound />}/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
