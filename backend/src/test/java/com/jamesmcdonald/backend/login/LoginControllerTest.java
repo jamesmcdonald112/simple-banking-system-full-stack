@@ -1,6 +1,7 @@
 package com.jamesmcdonald.backend.login;
 
 import com.jamesmcdonald.backend.account.Account;
+import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -27,8 +28,8 @@ class LoginControllerTest {
     private LoginService loginService;
 
     @Test
-    void login_invalidLogin_shouldReturnUnauthorizedStatus() throws Exception {
-        Account account = Account.create();
+    void login_validCredentials_shouldReturnAccountResponse() throws Exception {
+        Account account = AccountTestUtils.generateTestAccount();
 
         Mockito.when(loginService.authenticate(
                 account.getCardNumber(),

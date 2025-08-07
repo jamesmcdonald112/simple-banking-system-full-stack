@@ -1,5 +1,6 @@
 package com.jamesmcdonald.backend.account;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,13 @@ public class AccountController {
     }
 
     @PostMapping
-    public Account createAccount() {
-        return this.accountService.createAndSaveAccount();
+    public AccountResponseDTO createAccount(@RequestBody @Valid AccountRequestDTO accountDto) {
+        return this.accountService.createAndSaveAccount(
+                accountDto.name(),
+                accountDto.email(),
+                accountDto.phone(),
+                accountDto.password()
+        );
     }
 
     @DeleteMapping("{id}")

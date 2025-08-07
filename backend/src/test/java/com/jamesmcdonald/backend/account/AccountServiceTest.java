@@ -1,6 +1,7 @@
 package com.jamesmcdonald.backend.account;
 
 import com.jamesmcdonald.backend.constants.ErrorMessages;
+import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,13 +30,8 @@ class AccountServiceTest {
 
     @Test
     void getAllAccounts_shouldReturnAllAccounts() {
-        Account account1 = Account.create();
-        Account account2 = Account.create();
+        List<Account> mockList = AccountTestUtils.generateTwoTestAccounts();
 
-        List<Account> mockList = List.of(
-                account1,
-                account2
-        );
         Mockito.when(this.accountRepository.findAll())
                 .thenReturn(mockList);
 
@@ -48,11 +44,12 @@ class AccountServiceTest {
 
     @Test
     void deleteAccountById_accountExists_shouldDeleteSuccessfully() {
-        Account account = Account.create();
+        Account account = AccountTestUtils.generateTestAccount();
         Mockito.when(this.accountRepository.save(Mockito.any())).thenReturn(account);
         Mockito.when(this.accountRepository.existsById(account.getId())).thenReturn(true);
 
-        this.accountService.createAndSaveAccount();
+        this.accountService.createAndSaveAccount(account.getName(), account.getEmail(), account.getPhone(),
+                account.getPassword());
         this.accountService.deleteAccountById(account.getId());
 
         Mockito.verify(this.accountRepository).deleteById(account.getId());

@@ -29,8 +29,21 @@ public class Account {
     @Column(nullable = false)
     private int balance;
 
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private String password;
+
+
     /**
-     * Required by JPA. Do not use directly; use {@link #create()} instead.
+     * Required by JPA. Do not use directly; use {@link #create(String, String, String, String)} instead.
      */
     @Deprecated
     public Account() {
@@ -39,32 +52,41 @@ public class Account {
         this.pin = null;
     }
 
+
     /**
-     * Creates a new account with a card number, PIN, and balance of zero.
-     *
-     * @param cardNumber new card number
-     * @param pin new pin
-     * @param balance balance of 0
+     * Creates a new account with a card number, pin, balance, name, email, phone, and password.
+     * Used internally for account creation.
      */
-    private Account(String cardNumber, String pin, int balance) {
+    private Account(String cardNumber, String pin, int balance, String name, String email,
+                    String phone, String password) {
         this.cardNumber = cardNumber;
         this.pin = pin;
         this.balance = balance;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
     }
 
     /**
-     * Creates a new account with a generated card number, PIN, and balance of zero.
+     * Creates a new account with a generated card number, PIN, balance of zero, name, email,
+     * phone, and password.
      *
      * @return a new Account instance with unique cardNumber and PIN
      */
-    public static Account create() {
+    public static Account create(String name, String email, String phone, String password) {
         return new Account(
                 CardNumberGenerator.generateCardNumber(),
                 PinGenerator.generatePin(),
-                0
+                0,
+                name,
+                email,
+                phone,
+                password
         );
     }
 
+    // Getters
     public Long getId() {
         return id;
     }
@@ -79,6 +101,22 @@ public class Account {
 
     public int getBalance() {
         return balance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     // -- Object method overrides --
@@ -98,9 +136,14 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + this.id +
-                ", cardNumber='" + this.cardNumber + '\'' +
-                ", balance=" + this.balance +
+                "id=" + id +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", pin='" + pin + '\'' +
+                ", balance=" + balance +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

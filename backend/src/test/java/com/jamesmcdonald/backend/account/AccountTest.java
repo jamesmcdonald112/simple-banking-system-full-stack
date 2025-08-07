@@ -3,6 +3,9 @@ package com.jamesmcdonald.backend.account;
 import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import com.jamesmcdonald.backend.utils.LuhnUtils;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -15,7 +18,7 @@ class AccountTest {
      */
     @Test
     void create_whenCalled_returnsAccountWithValidCardNumberAndPin() {
-        Account account = Account.create();
+        Account account = AccountTestUtils.generateTestAccount();
 
         assertNotNull(
                 account.getCardNumber(),
@@ -40,8 +43,9 @@ class AccountTest {
      */
     @Test
     void comparingAccounts_withTheSameCardNumber_shouldBeEqual() {
-        Account account1 = Account.create();
-        Account account2 = Account.create();
+        List<Account> mockList = AccountTestUtils.generateTwoTestAccounts();
+        Account account1 = mockList.get(0);
+        Account account2 = mockList.get(1);
 
         try {
             AccountTestUtils.overrideCardNumber(account2, account1.getCardNumber());
@@ -65,8 +69,9 @@ class AccountTest {
      */
     @Test
     void comparingAccounts_withDifferentCardNumbers_shouldNotBeEqual() {
-        Account account1 = Account.create();
-        Account account2 = Account.create();
+        List<Account> mockList = AccountTestUtils.generateTwoTestAccounts();
+        Account account1 = mockList.get(0);
+        Account account2 = mockList.get(1);
 
         assertNotEquals(
                 account1,
@@ -86,7 +91,7 @@ class AccountTest {
      */
     @Test
     void teoString_shouldContainCardNumberAndBalance() {
-        Account account = Account.create();
+        Account account = AccountTestUtils.generateTestAccount();
         String result = account.toString();
 
         assertTrue(

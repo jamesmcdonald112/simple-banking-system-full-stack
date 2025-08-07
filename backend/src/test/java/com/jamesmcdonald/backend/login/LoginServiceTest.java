@@ -3,6 +3,7 @@ package com.jamesmcdonald.backend.login;
 import com.jamesmcdonald.backend.account.Account;
 import com.jamesmcdonald.backend.account.AccountRepository;
 import com.jamesmcdonald.backend.account.AccountService;
+import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +30,8 @@ class LoginServiceTest {
 
     @Test
     void authenticate_validCardNumberAndPin_shouldReturnAnOptionalAccount() {
-        Account account = Account.create();
+        Account account = AccountTestUtils.generateTestAccount();
+
 
         Mockito.when(this.accountRepository.findByCardNumberAndPin(
                 account.getCardNumber(),
