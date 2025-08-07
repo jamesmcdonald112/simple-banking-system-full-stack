@@ -1,0 +1,23 @@
+/* Labels */
+.form-label {
+  @apply text-[#A2A2A7] pb-1;
+}
+
+/* Inputs */
+.form-input {
+  @apply flex-1 text-white placeholder:text-gray-400 mx-3;
+}
+
+/* Input - Icons */
+.form-input-icon-wrapper {
+  @apply flex items-center gap-2 border-b border-gray-700 pb-2;
+}
+
+.form-input-icon {
+  @apply text-gray-400;
+}
+
+/* Button Submit */
+.form-submit-button {
+  @apply bg-[#0066FF] text-lg text-white rounded-xl py-3;
+}
