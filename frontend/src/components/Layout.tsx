@@ -6,7 +6,7 @@ export function Layout() {
   return (
     <div className="bg-[#161622] min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow flex items-center justify-cente">
         <Outlet />
       </main>
       <Footer />
