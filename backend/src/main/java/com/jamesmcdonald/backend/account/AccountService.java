@@ -1,6 +1,7 @@
 package com.jamesmcdonald.backend.account;
 
 import com.jamesmcdonald.backend.constants.ErrorMessages;
+import com.jamesmcdonald.backend.account.AccountResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,18 @@ public class AccountService {
         return this.accountRepository.findAll();
     }
 
-    public Account createAndSaveAccount() {
-        Account account = Account.create();
+    public AccountResponseDTO createAndSaveAccount(String name, String email, String phone, String password) {
+        Account account = Account.create(name, email, phone, password);
         log.info("Creating new account with card number: {}", account.getCardNumber());
-        return this.accountRepository.save(account);
+        Account savedAccount = this.accountRepository.save(account);
+        return new AccountResponseDTO(
+            savedAccount.getId(),
+            savedAccount.getCardNumber(),
+            savedAccount.getName(),
+            savedAccount.getEmail(),
+            savedAccount.getPhone(),
+            savedAccount.getBalance()
+        );
     }
 
     public void deleteAccountById(Long id) {
