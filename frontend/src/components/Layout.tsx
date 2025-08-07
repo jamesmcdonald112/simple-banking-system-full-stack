@@ -4,10 +4,12 @@ import Footer from "./Footer";
 
 export function Layout() {
   return (
-    <>
+    <div className="bg-[#161622] min-h-screen flex flex-col">
       <Navbar />
-      <Outlet />
+      <main className="flex-grow flex items-center justify-cente">
+        <Outlet />
+      </main>
       <Footer />
-    </>
+    </div>
   )
 }

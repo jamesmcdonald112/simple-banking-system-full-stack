@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 
-type TextInputProps = {
+type PasswordInputProps = {
   label: string;
   name: string;
   value: string;
@@ -12,7 +12,7 @@ type TextInputProps = {
 }
 
 
-export default function TextInput({label, name, value, onChange,  icon, className, required}: TextInputProps) {
+export default function PasswordInput({label, name, value, onChange,  icon, className, required}: PasswordInputProps) {
  return (
    <div className="flex flex-col">
      <label
@@ -27,11 +27,11 @@ export default function TextInput({label, name, value, onChange,  icon, classNam
         <input
             id={name}
             name={name}
-            type="text"
+            type="password"
             value={value}
             onChange={onChange}
             className={`form-input ${className || ""}`}
-            placeholder='John Doe'
+            placeholder='********'
             required={required}
           />  
      </div>

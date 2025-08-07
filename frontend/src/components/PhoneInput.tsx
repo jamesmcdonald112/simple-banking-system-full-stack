@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 
-type TextInputProps = {
+type PhoneInputProps = {
   label: string;
   name: string;
   value: string;
@@ -12,7 +12,7 @@ type TextInputProps = {
 }
 
 
-export default function TextInput({label, name, value, onChange,  icon, className, required}: TextInputProps) {
+export default function PhoneInput({label, name, value, onChange,  icon, className, required}: PhoneInputProps) {
  return (
    <div className="flex flex-col">
      <label
@@ -27,11 +27,12 @@ export default function TextInput({label, name, value, onChange,  icon, classNam
         <input
             id={name}
             name={name}
-            type="text"
+            type="tel"
+            pattern="^\+?[0-9\s]{7,15}$"
             value={value}
             onChange={onChange}
             className={`form-input ${className || ""}`}
-            placeholder='John Doe'
+            placeholder='+353 85 435 6748'
             required={required}
           />  
      </div>

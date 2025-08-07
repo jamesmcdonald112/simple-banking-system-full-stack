@@ -1,1 +1,4 @@
 @import "tailwindcss";
+
+/* src/index.css or src/main.css */
+@import "./styles/form.css";
