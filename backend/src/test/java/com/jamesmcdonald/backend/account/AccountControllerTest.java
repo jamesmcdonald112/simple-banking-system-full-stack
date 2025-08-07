@@ -1,5 +1,6 @@
 package com.jamesmcdonald.backend.account;
 
+import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,7 @@ class AccountControllerTest {
 
     @Test
     void getAllAccounts_shouldReturnAllAccounts() throws Exception {
-        Account account1 = Account.create();
-        Account account2 = Account.create();
-
-        List<Account> mockList = List.of(account1, account2);
+        List<Account> mockList = AccountTestUtils.generateTwoTestAccounts();
         Mockito.when(this.accountService.getAllAccounts())
                 .thenReturn(mockList);
 
@@ -41,18 +39,43 @@ class AccountControllerTest {
 
     @Test
     void createAccount_shouldCreateAccountAndAddToTheDatabase() throws Exception {
-        Account account = Account.create();
+        Account account = AccountTestUtils.generateTestAccount();
+        AccountResponseDTO responseDTO = new AccountResponseDTO(
+            1L,
+                account.getCardNumber(),
+                account.getName(),
+                account.getEmail(),
+                account.getPhone(),
+            0
+        );
 
-        Mockito.when(this.accountService.createAndSaveAccount())
-                .thenReturn(account);
+        Mockito.when(this.accountService.createAndSaveAccount(account.getName(),
+                        account.getEmail(), account.getPhone(),
+                        account.getPassword()))
+                .thenReturn(responseDTO);
 
-        this.mockMvc.perform(post("/api/accounts"))
+        String requestBody = """
+            {
+                "name": "%s",
+                "email": "%s",
+                "phone": "%s",
+                "password": "%s"
+            }
+            """.formatted(account.getName(), account.getEmail(), account.getPhone(), account.getPassword());
+
+        this.mockMvc.perform(post("/api/accounts")
+                .contentType("application/json")
+                .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cardNumber").value(account.getCardNumber()))
-                .andExpect(jsonPath("$.pin").value(account.getPin()))
-                .andExpect(jsonPath("$.balance").value(account.getBalance()));
+                .andExpect(jsonPath("$.cardNumber").value(responseDTO.cardNumber()))
+                .andExpect(jsonPath("$.name").value(responseDTO.name()))
+                .andExpect(jsonPath("$.email").value(responseDTO.email()))
+                .andExpect(jsonPath("$.phone").value(responseDTO.phone()))
+                .andExpect(jsonPath("$.balance").value(responseDTO.balance()));
 
-        Mockito.verify(accountService).createAndSaveAccount();
+        Mockito.verify(accountService).createAndSaveAccount(account.getName(), account.getEmail()
+                , account.getPhone(),
+                account.getPassword());
     }
 
     @Test
