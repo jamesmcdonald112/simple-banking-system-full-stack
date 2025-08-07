@@ -1,27 +1,40 @@
+import type { ReactNode } from 'react';
+
+
 type TextInputProps = {
- name: string;
- value: string;
- onChange: (e: React.ChangeEvent<HTMLInputElement>) => VoidFunction;
- className?: string;
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  icon?: ReactNode;
+  className?: string;
+  required?: boolean;
 }
 
 
-export default function TextInput({name, value, onChange, className}: TextInputProps) {
+export default function TextInput({label, name, value, onChange,  icon, className, required}: TextInputProps) {
  return (
-   <div>
+   <div className="flex flex-col">
      <label
        htmlFor={name}
+       className="form-label"
      >
-       {name}:
+       {label}
      </label>
-     <input
-         id={name}
-         name={name}
-         type="text"
-         value={value}
-         onChange={onChange}
-         className={className}
-       />  
+
+     <div className='form-input-icon-wrapper'>
+        <div className="form-input-icon">{icon}</div>
+        <input
+            id={name}
+            name={name}
+            type="text"
+            value={value}
+            onChange={onChange}
+            className={`form-input ${className || ""}`}
+            placeholder='John Doe'
+            required={required}
+          />  
+     </div>
    </div>
  )
 }
