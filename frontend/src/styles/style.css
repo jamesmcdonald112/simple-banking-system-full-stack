@@ -1,0 +1,27 @@
+/* Typography */
+.text-muted {
+  @apply text-[#A2A2A7];
+}
+
+.label {
+  @apply pb-1;
+}
+
+/* Icons */
+.icon-muted {
+  @apply text-gray-400;
+}
+
+/* Inputs & Form Fields */
+.input {
+  @apply flex-1 text-white placeholder:text-gray-400 mx-3;
+}
+
+.input-icon-wrapper {
+  @apply flex items-center gap-2 border-b border-gray-700 pb-2;
+}
+
+/* Buttons */
+.button-submit {
+  @apply bg-[#0066FF] text-lg text-white rounded-xl py-3;
+}

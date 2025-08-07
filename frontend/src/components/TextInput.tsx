@@ -17,20 +17,20 @@ export default function TextInput({label, name, value, onChange,  icon, classNam
    <div className="flex flex-col">
      <label
        htmlFor={name}
-       className="form-label"
+       className="label text-muted"
      >
        {label}
      </label>
 
-     <div className='form-input-icon-wrapper'>
-        <div className="form-input-icon">{icon}</div>
+     <div className='input-icon-wrapper'>
+        <div className="icon-muted">{icon}</div>
         <input
             id={name}
             name={name}
             type="text"
             value={value}
             onChange={onChange}
-            className={`form-input ${className || ""}`}
+            className={`input ${className || ""}`}
             placeholder='John Doe'
             required={required}
           />  

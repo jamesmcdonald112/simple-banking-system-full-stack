@@ -17,13 +17,13 @@ export default function PhoneInput({label, name, value, onChange,  icon, classNa
    <div className="flex flex-col">
      <label
        htmlFor={name}
-       className="form-label"
+       className="label text-muted"
      >
        {label}
      </label>
 
-     <div className='form-input-icon-wrapper'>
-        <div className="form-input-icon">{icon}</div>
+     <div className='input-icon-wrapper'>
+        <div className="icon-muted">{icon}</div>
         <input
             id={name}
             name={name}
@@ -31,7 +31,7 @@ export default function PhoneInput({label, name, value, onChange,  icon, classNa
             pattern="^\+?[0-9\s]{7,15}$"
             value={value}
             onChange={onChange}
-            className={`form-input ${className || ""}`}
+            className={`input ${className || ""}`}
             placeholder='+353 85 435 6748'
             required={required}
           />  
