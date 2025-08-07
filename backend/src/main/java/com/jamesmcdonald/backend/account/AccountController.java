@@ -2,6 +2,8 @@ package com.jamesmcdonald.backend.account;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +13,7 @@ import java.util.List;
 @RequestMapping("api/accounts")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AccountController {
-
+    private static final Logger log = LoggerFactory.getLogger(AccountController.class);
     private final AccountService accountService;
 
     public AccountController(AccountService accountService) {
@@ -25,6 +27,7 @@ public class AccountController {
 
     @PostMapping
     public AccountResponseDTO createAccount(@RequestBody @Valid AccountRequestDTO accountDto) {
+        log.info("Received request to create account: {}", accountDto.email());
         return this.accountService.createAndSaveAccount(
                 accountDto.name(),
                 accountDto.email(),

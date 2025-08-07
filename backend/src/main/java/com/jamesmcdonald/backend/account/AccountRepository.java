@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByCardNumberAndPin(String cardNumber, String pin);
+
+    boolean existsByEmail(String email);
 }
