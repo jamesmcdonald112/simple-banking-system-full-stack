@@ -1,7 +1,7 @@
 package com.jamesmcdonald.backend.testUtils;
 
 import com.jamesmcdonald.backend.account.Account;
-
+import java.util.List;
 import java.lang.reflect.Field;
 
 public class AccountTestUtils {
@@ -16,5 +16,16 @@ public class AccountTestUtils {
         Field cardNumberField = Account.class.getDeclaredField("cardNumber");
         cardNumberField.setAccessible(true);
         cardNumberField.set(target, newCardNumber);
+    }
+
+    public static Account generateTestAccount() {
+        return Account.create("John Doe", "johndoe1234@example.com", "+353852637489",
+                "password123");
+    }
+
+    public static List<Account> generateTwoTestAccounts() {
+        Account account1 = Account.create("John Doe", "johndoe1234@example.com", "+353852637489", "password123");
+        Account account2 = Account.create("Jane Doe", "janedoe1234@example.com", "+353850987654", "1234password");
+        return List.of(account1, account2);
     }
 }
