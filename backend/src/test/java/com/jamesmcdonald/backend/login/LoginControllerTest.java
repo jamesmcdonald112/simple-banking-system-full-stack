@@ -32,18 +32,21 @@ class LoginControllerTest {
         Account account = AccountTestUtils.generateTestAccount();
 
         Mockito.when(loginService.authenticate(
-                account.getCardNumber(),
-                account.getPin()))
+                        account.getCardNumber(),
+                        account.getPin(),
+                        account.getPassword()))
                 .thenReturn(Optional.of(account));
 
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                 {
-                    "cardNumber": "%s",
-                    "pin": "%s"
-                 }
-                 """.formatted(account.getCardNumber(), account.getPin()))
+                                {
+                                   "cardNumber": "%s",
+                                   "pin": "%s",
+                                   "password": "%s"
+                                }
+                                """.formatted(account.getCardNumber(), account.getPin(),
+                                account.getPassword()))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cardNumber").value(account.getCardNumber()))
@@ -55,20 +58,22 @@ class LoginControllerTest {
     void login_invalidLogin_shouldReturnAccountResponseInBody() throws Exception {
         String fakeCardNumber = "1234567890123456";
         String fakePin = "1234";
+        String fakePassword = "password12345";
 
         Mockito.when(loginService.authenticate(
                         fakeCardNumber,
-                        fakePin))
+                        fakePin,
+                        fakePassword))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                 {
-                    "cardNumber": "%s",
-                    "pin": "%s"
-                 }
-                 """.formatted(fakeCardNumber, fakePin))
+                                {
+                                   "cardNumber": "%s",
+                                   "pin": "%s"
+                                }
+                                """.formatted(fakeCardNumber, fakePin))
                 )
                 .andExpect(status().isUnauthorized());
     }

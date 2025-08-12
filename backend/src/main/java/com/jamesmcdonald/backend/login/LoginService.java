@@ -15,7 +15,8 @@ public class LoginService {
         this.accountRepository = accountRepository;
     }
 
-    public Optional<Account> authenticate(String cardNumber, String pin) {
-        return this.accountRepository.findByCardNumberAndPin(cardNumber, pin);
+    public Optional<Account> authenticate(String cardNumber, String pin, String password) {
+        return this.accountRepository.findByCardNumberAndPin(cardNumber, pin)
+                .filter(account -> account.getPassword().equals(password));
     }
 }

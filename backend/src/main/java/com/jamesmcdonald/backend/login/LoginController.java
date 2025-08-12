@@ -24,7 +24,8 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Optional<Account> account = this.loginService.authenticate(
                 request.getCardNumber(),
-                request.getPin()
+                request.getPin(),
+                request.getPassword()
         );
 
         if (account.isPresent()) {
@@ -32,7 +33,10 @@ public class LoginController {
             AccountResponse accountResponse =  new AccountResponse(
                     foundAccount.getId(),
                     foundAccount.getCardNumber(),
-                    foundAccount.getBalance()
+                    foundAccount.getBalance(),
+                    foundAccount.getName(),
+                    foundAccount.getEmail(),
+                    foundAccount.getPhone()
             );
             return ResponseEntity.ok(accountResponse);
         } else {
