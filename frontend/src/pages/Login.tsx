@@ -7,21 +7,22 @@ import FormContainer from "../components/FormContainer";
 import PinInput from "../components/PinInput";
 import PasswordInput from "../components/PasswordInput";
 import Button from "../components/Button";
-import type { Account } from "../types/Account";
 import { useNavigate } from "react-router-dom";
 
 
 export default function Login() {
   const navigate = useNavigate();
-  const [accountInfo, setAccountInfo]  = useState<Account | null>(null);
-  const {isLoggedIn, logIn} = useAuth();
-  const[isError, setIsError] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>('')
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { logIn } = useAuth();
 
   const [cardNumber, setCardNumber] = useState<string>('');
   const [pin, setPin]= useState<string>('');
   const [password, setPassword]= useState<string>('');
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const[isError, setIsError] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
+
+  
 
 
   async function handleLogin(e: React.FormEvent) {
@@ -31,13 +32,13 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const data = await userLogin({cardNumber, pin, password});
-      setAccountInfo(data);
+      const data = await userLogin({cardNumber, pin, password});      
       logIn();
       navigate("/dashboard", {state: data})
     } catch(error) {
+      const e = error as Error & { status?: number };
       setIsError(true);
-      setErrorMessage("Failed to login. Please try again")
+      setErrorMessage(e.message || "Login failed");
     } finally {
       setIsSubmitting(false)
     }
@@ -46,6 +47,13 @@ export default function Login() {
   return (
     <FormContainer onSubmit={handleLogin}>
       <Heading1>Login In</Heading1>
+
+      {/* Error message */}
+      {isError && (
+        <div className="rounded-md border border-red-500/50 bg-red-500/10 text-red-300 px-3 py-2 text-sm">
+          {errorMessage}
+        </div>
+      )}
 
       {/* Card Number */}
       <CardNumberInput

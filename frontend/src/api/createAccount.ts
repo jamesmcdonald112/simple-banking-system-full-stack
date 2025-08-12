@@ -8,6 +8,7 @@ type createAccountProps = {
   password: string;
 }
 
+
 export async function createAccount({name, phone, email, password}: createAccountProps): Promise<Account> {
   const res = await fetch(`${BASE_URL}/api/accounts`, {
     method: "POST",
