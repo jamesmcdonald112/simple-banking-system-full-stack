@@ -43,6 +43,7 @@ class AccountControllerTest {
         AccountResponseDTO responseDTO = new AccountResponseDTO(
             1L,
                 account.getCardNumber(),
+                account.getPin(),
                 account.getName(),
                 account.getEmail(),
                 account.getPhone(),

@@ -40,7 +40,8 @@ class LoginServiceTest {
 
         Optional<Account> result = this.loginService.authenticate(
                 account.getCardNumber(),
-                account.getPin());
+                account.getPin(),
+                account.getPassword());
 
         assertTrue(
                 result.isPresent(),
@@ -61,6 +62,8 @@ class LoginServiceTest {
     void authenticate_invalidCardNumberAndPin_shouldReturnEmptyOptional() {
         String fakeCardNumber = "7564738272646378";
         String fakePin = "1234";
+        String fakePassword = "password12345";
+
 
         Mockito.when(this.accountRepository.findByCardNumberAndPin(
                         fakeCardNumber,
@@ -69,7 +72,8 @@ class LoginServiceTest {
 
         Optional<Account> result = this.loginService.authenticate(
                 fakeCardNumber,
-                fakePin);
+                fakePin,
+                fakePassword);
 
         assertTrue(
                 result.isEmpty(),
