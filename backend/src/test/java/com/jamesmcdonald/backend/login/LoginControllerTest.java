@@ -1,9 +1,12 @@
 package com.jamesmcdonald.backend.login;
 
 import com.jamesmcdonald.backend.account.Account;
+import com.jamesmcdonald.backend.constants.ErrorMessages;
 import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -12,11 +15,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoginController.class)
 class LoginControllerTest {
@@ -53,28 +56,40 @@ class LoginControllerTest {
                 .andExpect(jsonPath("$.balance").value(account.getBalance()));
     }
 
-
-    @Test
-    void login_invalidLogin_shouldReturnAccountResponseInBody() throws Exception {
-        String fakeCardNumber = "1234567890123456";
-        String fakePin = "1234";
-        String fakePassword = "password12345";
-
-        Mockito.when(loginService.authenticate(
-                        fakeCardNumber,
-                        fakePin,
-                        fakePassword))
+    @ParameterizedTest
+    @MethodSource("invalidCredentialPayloads")
+    void login_withAnyInvalidCredential_returns401Problem(String cardNumber, String pin, String password) throws Exception {
+        Mockito.when(loginService.authenticate(cardNumber, pin, password))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {
-                                   "cardNumber": "%s",
-                                   "pin": "%s"
-                                }
-                                """.formatted(fakeCardNumber, fakePin))
-                )
-                .andExpect(status().isUnauthorized());
+                {
+                  "cardNumber": "%s",
+                  "pin": "%s",
+                  "password": "%s"
+                }
+            """.formatted(cardNumber, pin, password)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(header().string("Content-Type", "application/problem+json"))
+                .andExpect(jsonPath("$.type").value("about:blank"))
+                .andExpect(jsonPath("$.title").value("Invalid credentials"))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.INVALID_CARD_OR_PIN_OR_PASSWORD))
+                .andExpect(jsonPath("$.code").value("AUTH_INVALID_CREDENTIALS"));
+    }
+
+    private static Stream<Arguments> invalidCredentialPayloads() {
+        Account account = AccountTestUtils.generateTestAccount();
+
+        return Stream.of(
+                // wrong card number
+                Arguments.of("9999999999999999", account.getPin(), account.getPassword()),
+                // wrong pin
+                Arguments.of(account.getCardNumber(), "1234", account.getPassword()),
+                //wrong password
+                Arguments.of(account.getCardNumber(), account.getPin(), "password")
+        );
     }
 }

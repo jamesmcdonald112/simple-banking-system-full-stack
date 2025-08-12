@@ -4,6 +4,7 @@ import com.jamesmcdonald.backend.account.Account;
 import com.jamesmcdonald.backend.account.AccountRepository;
 import com.jamesmcdonald.backend.constants.ErrorMessages;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,19 +31,21 @@ public class LoginController {
 
         if (account.isPresent()) {
             Account foundAccount = account.get();
-            AccountResponse accountResponse =  new AccountResponse(
+            return ResponseEntity.ok(new AccountResponse(
                     foundAccount.getId(),
                     foundAccount.getCardNumber(),
                     foundAccount.getBalance(),
                     foundAccount.getName(),
                     foundAccount.getEmail(),
                     foundAccount.getPhone()
-            );
-            return ResponseEntity.ok(accountResponse);
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ErrorMessages.INVALID_CARD_OR_PIN);
+            ));
         }
+
+        ProblemDetail problemDetail = ProblemDetail.forStatus((HttpStatus.UNAUTHORIZED));
+        problemDetail.setTitle("Invalid credentials");
+        problemDetail.setDetail(ErrorMessages.INVALID_CARD_OR_PIN_OR_PASSWORD);
+        problemDetail.setProperty("code", "AUTH_INVALID_CREDENTIALS");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
     }
 }
