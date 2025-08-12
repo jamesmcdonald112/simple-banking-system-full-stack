@@ -1,29 +1,29 @@
 import type { ReactNode } from 'react';
+import {MdLock } from 'react-icons/md'
+
 
 
 type PasswordInputProps = {
-  label: string;
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  icon?: ReactNode;
   className?: string;
   required?: boolean;
 }
 
 
-export default function PasswordInput({label, name, value, onChange,  icon, className, required}: PasswordInputProps) {
+export default function PasswordInput({name, value, onChange, className, required}: PasswordInputProps) {
  return (
    <div className="flex flex-col">
      <label
        htmlFor={name}
        className="label text-muted"
      >
-       {label}
+       Password
      </label>
 
      <div className='input-icon-wrapper'>
-        <div className="icon-muted">{icon}</div>
+        <div className="icon-muted">{<MdLock />}</div>
         <input
             id={name}
             name={name}

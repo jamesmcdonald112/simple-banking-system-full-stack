@@ -1,48 +1,47 @@
-import type { ReactNode } from 'react';
+import { MdOutlineFiberPin } from 'react-icons/md';
 
 
-type TextInputProps = {
-  label: string;
-  name: string;
+type PinInputProps = {
+  id?: string;
+  name?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  icon?: ReactNode;
   className?: string;
-  placeholder?: string;
   required?: boolean;
-
 }
 
 
-export default function TextInput({
-  label, 
-  name, 
+export default function PinInput({ 
+  id,
+  name,
   value, 
-  onChange,  
-  icon, 
+  onChange,   
   className, 
-  placeholder, 
-  required}: TextInputProps) {
+  required}: PinInputProps) {
  return (
    <div className="flex flex-col">
      <label
-       htmlFor={name}
+       htmlFor="pin"
        className="label text-muted"
      >
-       {label}
+       PIN
      </label>
 
      <div className='input-icon-wrapper'>
-        <div className="icon-muted">{icon}</div>
+        <div className="icon-muted">{<MdOutlineFiberPin />}</div>
         <input
-            id={name}
+            id={id}
             name={name}
             type="text"
             value={value}
             onChange={onChange}
             className={`input ${className || ""}`}
-            placeholder={placeholder}
-            required={required}            
+            placeholder="****"
+            required={required}
+            max={4}
+            min={4}
+            pattern='\d{4}'
+            title="Card number must be 4 digits"
           />  
      </div>
    </div>
