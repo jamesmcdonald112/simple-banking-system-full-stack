@@ -1,26 +1,44 @@
 import { BASE_URL } from "../config";
-import type { Account } from "../types/Account";
+import type { ProblemDetail } from "../types/http";
 
-type userLoginProps = {
+type LoginPayload = {
   cardNumber: string;
   pin: string;
   password: string;
 }
 
-export async function userLogin({cardNumber, pin, password}: userLoginProps): Promise<Account> {
+type LoginSuccess = {
+  id: number;
+  cardNumber: string;
+  balance: number;
+  name: string;
+  email: string;
+  phone: string;
+};
+
+export async function userLogin(body: LoginPayload): Promise<LoginSuccess> {
   const res = await fetch(`${BASE_URL}/api/login`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({cardNumber, pin, password})
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
   });
 
-   console.log(res)
-
   if (!res.ok) {
-    throw new Error("Failed to create account");
+    let problem: ProblemDetail | undefined;
+
+    try {
+      problem = await res.json();
+    } catch (err) {
+        console.warn("Could not parse error response as JSON", err);
+
+    }
+
+    const message = problem?.detail || problem?.title || "Login failed";
+    const error = new Error(message) as Error & { status?: number; code?: string };
+    error.status = res.status;
+    if (problem?.code) error.code = problem.code;
+    throw error;
   }
 
-  return res.json();
+  return res.json() as Promise<LoginSuccess>;
 }
