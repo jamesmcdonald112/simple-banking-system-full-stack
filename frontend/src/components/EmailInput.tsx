@@ -8,11 +8,12 @@ type EmailInputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   icon?: ReactNode;
   className?: string;
+  placeholder?: string;
   required?: boolean;
 }
 
 
-export default function EmailInput({label, name, value, onChange,  icon, className, required}: EmailInputProps) {
+export default function EmailInput({label, name, value, onChange,  icon, className, placeholder, required}: EmailInputProps) {
  return (
    <div className="flex flex-col">
      <label
@@ -32,7 +33,7 @@ export default function EmailInput({label, name, value, onChange,  icon, classNa
             value={value}
             onChange={onChange}
             className={`input ${className || ""}`}
-            placeholder='johndoe1234@email.com'
+            placeholder={placeholder}
             required={required}
           />  
      </div>

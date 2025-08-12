@@ -4,6 +4,7 @@ import Heading1 from "../components/Heading1";
 import InfoField from "../components/InfoField";
 import { MdEmail, MdPerson, MdPhone, MdCreditCard, MdOutlineFiberPin } from 'react-icons/md'
 import { useEffect } from "react";
+import Container from "../components/Container";
 
 
 export default function AccountCreated() {
@@ -21,7 +22,7 @@ export default function AccountCreated() {
   }, [location, navigate]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <Container className="flex flex-col gap-2">
       <Heading1>Account Created</Heading1>
 
       {/* Name */}
@@ -66,6 +67,6 @@ export default function AccountCreated() {
         Go To Login
       </Button>
 
-    </div>
+    </Container>
   )
 }

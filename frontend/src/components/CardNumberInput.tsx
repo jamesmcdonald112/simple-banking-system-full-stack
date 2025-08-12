@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
+import { MdCreditCard } from 'react-icons/md';
 
 
-type TextInputProps = {
+type CardNumberInputProps = {
   label: string;
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  icon?: ReactNode;
   className?: string;
   placeholder?: string;
   required?: boolean;
@@ -14,15 +14,14 @@ type TextInputProps = {
 }
 
 
-export default function TextInput({
+export default function CardNumberInput({
   label, 
   name, 
   value, 
-  onChange,  
-  icon, 
+  onChange,   
   className, 
   placeholder, 
-  required}: TextInputProps) {
+  required}: CardNumberInputProps) {
  return (
    <div className="flex flex-col">
      <label
@@ -33,7 +32,7 @@ export default function TextInput({
      </label>
 
      <div className='input-icon-wrapper'>
-        <div className="icon-muted">{icon}</div>
+        <div className="icon-muted">{<MdCreditCard />}</div>
         <input
             id={name}
             name={name}
@@ -42,7 +41,11 @@ export default function TextInput({
             onChange={onChange}
             className={`input ${className || ""}`}
             placeholder={placeholder}
-            required={required}            
+            required={required}
+            max={16}
+            min={16}
+            pattern='\d{16}'
+            title="Card number must be 16 digits"
           />  
      </div>
    </div>

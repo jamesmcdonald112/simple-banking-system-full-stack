@@ -8,11 +8,12 @@ type PhoneInputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   icon?: ReactNode;
   className?: string;
+  placeholder?: string;
   required?: boolean;
 }
 
 
-export default function PhoneInput({label, name, value, onChange,  icon, className, required}: PhoneInputProps) {
+export default function PhoneInput({label, name, value, onChange,  icon, className, placeholder, required}: PhoneInputProps) {
  return (
    <div className="flex flex-col">
      <label
@@ -32,7 +33,7 @@ export default function PhoneInput({label, name, value, onChange,  icon, classNa
             value={value}
             onChange={onChange}
             className={`input ${className || ""}`}
-            placeholder='+353 85 435 6748'
+            placeholder={placeholder}
             required={required}
           />  
      </div>
