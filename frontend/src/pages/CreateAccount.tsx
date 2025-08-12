@@ -46,28 +46,12 @@ export default function CreateAccount() {
     }
   }
 
-  // Render feedback messages
- const successMessage = accountInfo && !isError && (
-  <div className="text-white">
-    <p>Name: {accountInfo.name}</p>
-    <p>Email: {accountInfo.email}</p>
-    <p>Phone: {accountInfo.phone}</p>
-    <p>Card Number: {accountInfo.cardNumber}</p>
-    <p>PIN: {accountInfo.pin}</p>
-  </div>
- )
 
- const errorFeedback = isError && errorMessage && (
-  <div>
-    <p>{errorMessage}</p>
-  </div>
- )
     
 //  Render Component
  return (
-    <FormContainer>
-      <Heading1>Create Account</Heading1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+    <FormContainer onSubmit={handleSubmit}>
+      <Heading1>Create Account</Heading1>      
 
         {/* Name */}
         <TextInput 
@@ -76,6 +60,7 @@ export default function CreateAccount() {
           value={name}
           icon={<MdPerson/>}
           onChange={(e) => setName(e.target.value)}
+          placeholder="John Doe"
           required={true}
         />
 
@@ -86,6 +71,7 @@ export default function CreateAccount() {
           value={phone}
           icon={<MdPhone />}
           onChange={(e) => setPhone(e.target.value)}
+          placeholder="+353 85 435 6748"
           required={true}
         />
 
@@ -96,16 +82,15 @@ export default function CreateAccount() {
           value={email}
           icon={<MdEmail />}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder='johndoe1234@email.com'
           required={true}
         />
 
         {/* Password */}
-        <PasswordInput
-          label="Password"
+        <PasswordInput          
           name="password"
-          value={password}
-          icon={<MdLock />}
-          onChange={(e) => setPassword(e.target.value)}
+          value={password}          
+          onChange={(e) => setPassword(e.target.value)}       
           required={true}
         />
 
@@ -116,11 +101,7 @@ export default function CreateAccount() {
         >
           {isSubmitting ? "Creating..." : "Create Account"}
         </Button>        
-      </form>
 
-      {successMessage}
-
-      {errorFeedback}   
     </FormContainer>
  )
 }
