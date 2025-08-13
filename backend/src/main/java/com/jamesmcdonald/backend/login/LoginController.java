@@ -23,29 +23,25 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<Account> account = this.loginService.authenticate(
+        return this.loginService.authenticate(
                 request.getCardNumber(),
                 request.getPin(),
                 request.getPassword()
-        );
-
-        if (account.isPresent()) {
-            Account foundAccount = account.get();
-            return ResponseEntity.ok(new AccountResponse(
-                    foundAccount.getId(),
-                    foundAccount.getCardNumber(),
-                    foundAccount.getBalance(),
-                    foundAccount.getName(),
-                    foundAccount.getEmail(),
-                    foundAccount.getPhone()
-            ));
-        }
-
-        ProblemDetail problemDetail = ProblemDetail.forStatus((HttpStatus.UNAUTHORIZED));
-        problemDetail.setTitle("Invalid credentials");
-        problemDetail.setDetail(ErrorMessages.INVALID_CARD_OR_PIN_OR_PASSWORD);
-        problemDetail.setProperty("code", "AUTH_INVALID_CREDENTIALS");
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
+        ).<ResponseEntity<?>>map(account ->
+                ResponseEntity.ok(new AccountResponse(
+                        account.getId(),
+                        account.getCardNumber(),
+                        account.getBalance(),
+                        account.getName(),
+                        account.getEmail(),
+                        account.getPhone()
+                ))
+        ).orElseGet(() -> {
+            ProblemDetail problemDetail = ProblemDetail.forStatus((HttpStatus.UNAUTHORIZED));
+            problemDetail.setTitle("Invalid credentials");
+            problemDetail.setDetail(ErrorMessages.INVALID_CARD_OR_PIN_OR_PASSWORD);
+            problemDetail.setProperty("code", "AUTH_INVALID_CREDENTIALS");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
+        });
     }
 }
