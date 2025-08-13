@@ -24,9 +24,9 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return this.loginService.authenticate(
-                request.getCardNumber(),
-                request.getPin(),
-                request.getPassword()
+                request.cardNumber(),
+                request.pin(),
+                request.password()
         ).<ResponseEntity<?>>map(account ->
                 ResponseEntity.ok(new AccountResponse(
                         account.getId(),
