@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -80,6 +80,55 @@ class LoginControllerTest {
                 .andExpect(jsonPath("$.code").value("AUTH_INVALID_CREDENTIALS"));
     }
 
+    @ParameterizedTest
+    @MethodSource("badCardNumbers")
+    void login_invalidCardNumber_shouldReturn400Status(String badCard) throws Exception {
+        mockMvc.perform(post("/api/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"cardNumber":"%s","pin":"1234","password":"goodPassword"}
+                    """.formatted(badCard)))
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("Content-Type", "application/problem+json"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.type").value("about:blank"));
+
+        verifyNoInteractions(loginService);
+    }
+
+    @ParameterizedTest
+    @MethodSource("badPins")
+    void login_invalidPin_shouldReturn400Status(String badPin) throws Exception {
+        mockMvc.perform(post("/api/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"cardNumber":"1234567890987654","pin":"%s","password":"goodPassword"}
+                    """.formatted(badPin)))
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("Content-Type", "application/problem+json"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.type").value("about:blank"));
+
+        verifyNoInteractions(loginService);
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("badPasswords")
+    void login_invalidPassword_returns400(String badPassword) throws Exception {
+        mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                {"cardNumber":"4000123412341234","pin":"1234","password":"%s"}
+            """.formatted(badPassword)))
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("Content-Type", "application/problem+json"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.type").value("about:blank"));
+
+        verifyNoInteractions(loginService);
+    }
+
     private static Stream<Arguments> invalidCredentialPayloads() {
         Account account = AccountTestUtils.generateTestAccount();
 
@@ -91,5 +140,19 @@ class LoginControllerTest {
                 //wrong password
                 Arguments.of(account.getCardNumber(), account.getPin(), "password")
         );
+    }
+
+    private static Stream<String> badCardNumbers() {
+        return Stream.of(
+                "", " ", "123", "abcdabcdabcdabcd", "123456789012345", "12345678901234567"
+        );
+    }
+
+    private static Stream<String> badPins() {
+        return Stream.of("", "1", "12", "123", "abcd", "12345");
+    }
+
+    private static Stream<String> badPasswords() {
+        return Stream.of("", "   ", "a", "abc");
     }
 }
