@@ -3,6 +3,7 @@ package com.jamesmcdonald.backend.login;
 import com.jamesmcdonald.backend.account.Account;
 import com.jamesmcdonald.backend.account.AccountRepository;
 import com.jamesmcdonald.backend.constants.ErrorMessages;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         return this.loginService.authenticate(
                 request.cardNumber(),
                 request.pin(),
