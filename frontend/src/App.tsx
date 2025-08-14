@@ -7,18 +7,27 @@ import NotFound from './pages/NotFound'
 import PrivateRoute from './routes/PrivateRoute'
 import { Layout } from './components/Layout'
 import AccountCreated from './pages/AccountCreated'
+import AuthGate from './routes/AuthGate'
+import PublicRoute from './routes/PublicRoute'
 
 function App() {
 
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path='/login' element={<Login />}/>
-        <Route path='/create-account' element={<CreateAccount />}/>
-        <Route path='/account-created' element={<AccountCreated />}/>
+        {/* Root decides based on auth */}
+        <Route index element={<AuthGate />} />
 
+        {/* Public pages but bounce if logged in */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/account-created" element={<AccountCreated />} />
+        </Route>
+
+        {/* Private Pages */}
         <Route element={<PrivateRoute />}>
-          <Route index element={<Dashboard />} />
+          <Route element={<Dashboard />} />
           <Route path='/dashboard' element={<Dashboard />}/>
         </Route>
 
