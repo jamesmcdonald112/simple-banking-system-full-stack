@@ -33,8 +33,8 @@ export default function Login() {
 
     try {
       const data = await userLogin({cardNumber, pin, password});      
-      logIn();
-      navigate("/dashboard", {state: data})
+      logIn(data);
+      navigate("/dashboard")
     } catch(error) {
       const e = error as Error & { status?: number };
       setIsError(true);
