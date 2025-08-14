@@ -3,7 +3,7 @@ export type Account = {
     name: string;
     email: string;
     phone: string;
-    password: string;
-    cardNumber: number;
-    pin: string;
+    cardNumber: string;
+    balance: number;
+    pin?: string;
   }

@@ -1,29 +1,34 @@
 import { useState, type ReactNode } from "react";
-import {AuthContext} from "./AuthContext";
+import { AuthContext } from "./AuthContext";
+import type { Account } from "../types/Account";
 
-type AuthProviderProps = {
-  children: ReactNode;
-};
+type AuthProviderProps = { children: ReactNode };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    const saved = localStorage.getItem('isLoggedIn');
-    return saved === "true";
+  const [account, setAccount] = useState<Account | null>(() => {
+
+    const raw = localStorage.getItem("account");
+    try {
+      return raw ? (JSON.parse(raw) as Account) : null;
+    } catch {
+      return null;
+    }
   });
 
-  const logIn = () => {
-    setIsLoggedIn(true);
-    localStorage.setItem("isLoggedIn", "true");
+  const isLoggedIn = !!account;
+
+  const logIn = (accountData: Account) => {
+    setAccount(accountData);
+    localStorage.setItem("account", JSON.stringify(accountData));
   };
 
   const logOut = () => {
-    setIsLoggedIn(false);
-        localStorage.setItem("isLoggedIn", "false");
-
-  }
+    setAccount(null);
+    localStorage.removeItem("account");
+  };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, logIn, logOut }}>
+    <AuthContext.Provider value={{ account, isLoggedIn, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

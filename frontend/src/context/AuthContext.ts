@@ -1,9 +1,11 @@
 // AuthContext.ts
 import { createContext, useContext } from "react";
+import type { Account } from "../types/Account";
 
 type AuthContextType = {
+  account: Account | null;
   isLoggedIn: boolean;
-  logIn: () => void;
+  logIn: (account: Account) => void;
   logOut: () => void
 };
 
