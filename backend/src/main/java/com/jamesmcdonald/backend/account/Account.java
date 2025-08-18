@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -27,7 +28,7 @@ public class Account {
     private final String pin;
 
     @Column(nullable = false)
-    private int balance;
+    private BigDecimal balance;
 
     @Column(nullable = false)
     private String name;
@@ -57,7 +58,7 @@ public class Account {
      * Creates a new account with a card number, pin, balance, name, email, phone, and password.
      * Used internally for account creation.
      */
-    private Account(String cardNumber, String pin, int balance, String name, String email,
+    private Account(String cardNumber, String pin, BigDecimal balance, String name, String email,
                     String phone, String password) {
         this.cardNumber = cardNumber;
         this.pin = pin;
@@ -78,12 +79,19 @@ public class Account {
         return new Account(
                 CardNumberGenerator.generateCardNumber(),
                 PinGenerator.generatePin(),
-                0,
+                BigDecimal.ZERO,
                 name,
                 email,
                 phone,
                 password
         );
+    }
+
+    public void addAmount(BigDecimal amount) {
+        if (amount.signum() <= 0) {
+            throw new IllegalArgumentException("Amount must be > 0");
+        }
+        this.balance = this.balance.add(amount);
     }
 
     // Getters
@@ -99,7 +107,7 @@ public class Account {
         return pin;
     }
 
-    public int getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 

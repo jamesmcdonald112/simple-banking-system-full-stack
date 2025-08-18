@@ -10,6 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,7 +48,7 @@ class AccountControllerTest {
                 account.getName(),
                 account.getEmail(),
                 account.getPhone(),
-            0
+                BigDecimal.ZERO
         );
 
         Mockito.when(this.accountService.createAndSaveAccount(account.getName(),

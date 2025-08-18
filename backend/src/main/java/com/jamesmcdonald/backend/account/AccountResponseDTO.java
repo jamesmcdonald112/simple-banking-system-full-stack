@@ -1,5 +1,7 @@
 package com.jamesmcdonald.backend.account;
 
+import java.math.BigDecimal;
+
 public record AccountResponseDTO(
         Long id,
         String cardNumber,
@@ -7,5 +9,5 @@ public record AccountResponseDTO(
         String name,
         String email,
         String phone,
-        int balance
+        BigDecimal balance
 ) {}

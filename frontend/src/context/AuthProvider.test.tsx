@@ -6,10 +6,19 @@ import { render, screen, act } from "@testing-library/react";
 function TestComponent() {
   const {isLoggedIn, logIn, logOut} = useAuth();
 
+  const mockAccount = {
+    id: 1,
+    name: "Test User",
+    email: "test@example.com",
+    phone: "+353123456789",
+    cardNumber: "4000123412341234",
+    balance: 0,
+  } as const;
+
   return (
     <div>
       <p data-testid="login-status">Logged in: {isLoggedIn.toString()}</p>
-      <button onClick={logIn}>Log in</button>
+      <button onClick={() => logIn(mockAccount as any)}>Log in</button>
       <button onClick={logOut}>Log out</button>
     </div>
   )
@@ -42,7 +51,10 @@ describe('AuthProvider with local storage', () => {
     });
 
     expect(screen.getByTestId('login-status')).toHaveTextContent('Logged in: true')
-    expect(localStorage.getItem("isLoggedIn")).toBe("true");
+    const raw = localStorage.getItem("account");
+    expect(raw).not.toBeNull();
+    const stored = JSON.parse(raw as string);
+    expect(stored.name).toBe("Test User");
   })
 
   test("logOut sets the state and updates localStorage", () => {
@@ -58,7 +70,7 @@ describe('AuthProvider with local storage', () => {
     });
 
     expect(screen.getByText(/logged in: false/i)).toBeInTheDocument();
-    expect(localStorage.getItem("isLoggedIn")).toBe("false");
+    expect(localStorage.getItem("account")).toBeNull();
     
   })
 })

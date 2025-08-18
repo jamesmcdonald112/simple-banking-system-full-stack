@@ -4,6 +4,7 @@ import com.jamesmcdonald.backend.testUtils.AccountTestUtils;
 import com.jamesmcdonald.backend.utils.LuhnUtils;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class AccountTest {
                 "PIN should be a 4-digit numeric string");
 
         assertEquals(
-                0,
+                BigDecimal.ZERO,
                 account.getBalance(),
                 "Newly created accounts should have a balance of 0");
     }
@@ -90,7 +91,7 @@ class AccountTest {
      * Ensures the toString method contains the id, card number and the balance
      */
     @Test
-    void teoString_shouldContainCardNumberAndBalance() {
+    void toString_shouldContainCardNumberAndBalance() {
         Account account = AccountTestUtils.generateTestAccount();
         String result = account.toString();
 
@@ -107,4 +108,31 @@ class AccountTest {
                 "The toString() method should contain the balance"
         );
     }
+
+    @Test
+    void create_whenCalled_setsBalanceToZeroBigDecimal() {
+        Account account = AccountTestUtils.generateTestAccount();
+        assertEquals(0, account.getBalance().compareTo(new BigDecimal("0.00")));
+    }
+
+    @Test
+    void addAmount_withPositiveValue_shouldIncreaseBalance() {
+        Account account = AccountTestUtils.generateTestAccount();
+
+        // start at 0.00
+        assertEquals(0, account.getBalance().compareTo(new BigDecimal("0.00")));
+
+        account.addAmount(new BigDecimal("10.50"));
+
+        // expect 10.50 after deposit
+        assertEquals(0, account.getBalance().compareTo(new BigDecimal("10.50")));
+    }
+
+    @Test
+    void addAmount_withNegativeValue_shouldThrow() {
+        Account account = AccountTestUtils.generateTestAccount();
+        assertThrows(IllegalArgumentException.class,
+                () -> account.addAmount(new BigDecimal("-0.01")));
+    }
+
 }
