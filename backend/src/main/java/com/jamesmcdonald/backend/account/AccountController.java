@@ -36,6 +36,14 @@ public class AccountController {
         );
     }
 
+    @PostMapping("{id}/deposit")
+    public AccountResponseDTO deposit(
+            @PathVariable @Min(1) Long id,
+            @RequestBody @Valid DepositRequestDTO requestDTO
+    ) {
+        return this.accountService.deposit(id, requestDTO.amount());
+    }
+
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable @Min(1) Long id) {

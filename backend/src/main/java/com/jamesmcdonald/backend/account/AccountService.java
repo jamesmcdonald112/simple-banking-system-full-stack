@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -49,6 +51,26 @@ public class AccountService {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     ErrorMessages.EMAIL_ALREADY_IN_USE);
         }
+    }
+
+    @Transactional
+    public AccountResponseDTO deposit(Long id, BigDecimal amount) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        ErrorMessages.ACCOUNT_NOT_FOUND));
+
+        account.addAmount(amount);
+
+        return new AccountResponseDTO(
+                account.getId(),
+                account.getCardNumber(),
+                account.getPin(),
+                account.getName(),
+                account.getEmail(),
+                account.getPhone(),
+                account.getBalance()
+        );
+
     }
 
     public void deleteAccountById(Long id) {
