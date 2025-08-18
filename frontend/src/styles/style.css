@@ -23,5 +23,5 @@
 
 /* Buttons */
 .button-submit {
-  @apply bg-[#0066FF] text-lg text-white rounded-xl py-3;
+  @apply bg-[#0066FF] text-lg text-white rounded-xl py-2 px-3;
 }

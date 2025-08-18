@@ -5,8 +5,9 @@ import Login from './pages/Login'
 import CreateAccount from './pages/CreateAccount'
 import NotFound from './pages/NotFound'
 import { type ReactNode } from 'react'
-import {AuthContext} from './context/AuthContext'
+import { AuthContext } from './context/AuthContext'
 import { MemoryRouter } from 'react-router-dom'
+import type { Account } from './types/Account'
 
 
 
@@ -29,7 +30,7 @@ test('renders Dashboard page when visiting /dashboard (user must be signed in)',
       </MockAuthProvider>
     </MemoryRouter>
   )
-  expect(screen.getByRole('heading', { name: /dashboard/i })).toBeInTheDocument()
+  expect(screen.getByText(/welcome back/i)).toBeInTheDocument()
 })
 
 test('renders Create Account page when visiting /create-account', () => {
@@ -70,21 +71,33 @@ test('renders dashboard page when the user is signed in', () => {
       </MockAuthProvider>
     </MemoryRouter>
   )
-  expect(screen.getByRole('heading', { name: /dashboard/i })).toBeInTheDocument()
+  expect(screen.getByText(/welcome back/i)).toBeInTheDocument()
 })
 
 type MockAuthProviderProps = {
   children: ReactNode;
-  isLoggedInStatus: boolean
+  isLoggedInStatus: boolean;
+  accountOverride?: Partial<Account>;
 }
 
-function MockAuthProvider({ children, isLoggedInStatus }: MockAuthProviderProps) {
+function MockAuthProvider({ children, isLoggedInStatus, accountOverride }: MockAuthProviderProps) {
+  const fakeAccount: Account | null = isLoggedInStatus
+    ? {
+        id: 1,
+        name: 'Test User',
+        email: 'test@example.com',
+        phone: '+353123456789',
+        cardNumber: '4000123412341234',
+        balance: 100,
+        ...accountOverride,
+      }
+    : null;
+
+  const logIn = (_acct: Account) => {};
+  const logOut = () => {};
+
   return (
-    <AuthContext.Provider value={{
-      isLoggedIn: isLoggedInStatus,
-      logIn: () => {},
-      logOut: () => {}
-    }}>
+    <AuthContext.Provider value={{ account: fakeAccount, isLoggedIn: !!fakeAccount, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );
