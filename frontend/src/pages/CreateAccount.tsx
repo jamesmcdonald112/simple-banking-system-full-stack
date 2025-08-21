@@ -9,7 +9,7 @@ import PasswordInput from "../components/PasswordInput";
 import FormContainer from "../components/FormContainer";
 import Heading1 from "../components/Heading1";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
@@ -94,13 +94,23 @@ export default function CreateAccount() {
           required={true}
         />
 
-        {/* Submit Button */}
-        <Button
-        type="submit"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Creating..." : "Create Account"}
-        </Button>        
+        <div className="flex justify-between items-center">
+          {/* Submit Button */}
+          <Button
+          type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creating..." : "Create Account"}
+          </Button>    
+
+          <Link 
+            to="/login" 
+            className="text-blue-500 hover:underline ml-4"
+          >
+            Already have an account?
+          </Link>
+        </div>
+           
 
     </FormContainer>
  )
