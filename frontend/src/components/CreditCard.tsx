@@ -1,7 +1,7 @@
 import Background from '../images/worldmap.png'
 import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import { FaWifi } from "react-icons/fa";
-import MasterCardLogo from '../images/Mastercard-logo.svg'
+import MasterCardLogo from '../images/mastercard-logo.svg'
 
 type CreditCardProps = {
   cardNumber: string;
