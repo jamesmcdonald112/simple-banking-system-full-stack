@@ -1,5 +1,4 @@
 import AddMoneyModal from "../components/AddMoneyModal";
-import { useNavigate } from "react-router-dom";
 import WelcomeHeader from "../components/WelcomeHeader";
 import { useAuth } from "../context/AuthContext";
 import Container from "../components/Container";
@@ -8,15 +7,12 @@ import { RiBankCardFill } from "react-icons/ri";
 import ActionButton from "../components/ActionButton";
 import FlipCardComponent from "../components/FlipCardComponent";
 import { useState } from "react";
-import { deposit } from "../api/deposit";
 
 
 export default function Dashboard() {
   const { account, logOut, logIn } = useAuth();
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [showAddMoney, setShowAddMoney] = useState(false);
-  const navigate = useNavigate();
-
   if (!account) return null;
 
   function handleTransfer() {
