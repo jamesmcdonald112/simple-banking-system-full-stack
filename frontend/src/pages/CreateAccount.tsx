@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Account } from "../types/Account";
 import { createAccount } from "../api/createAccount";
 import TextInput from "../components/TextInput";
-import { MdEmail, MdPerson, MdPhone, MdLock } from 'react-icons/md'
+import { MdEmail, MdPerson, MdPhone } from 'react-icons/md'
 import PhoneInput from "../components/PhoneInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";

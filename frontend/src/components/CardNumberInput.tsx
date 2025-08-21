@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { MdCreditCard } from 'react-icons/md';
 
 
