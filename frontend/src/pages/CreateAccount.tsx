@@ -16,9 +16,9 @@ import { useNavigate } from "react-router-dom";
 export default function CreateAccount() {
   
   // Local state management
-  const [accountInfo, setAccountInfo]  = useState<Account | null>(null);
-  const[isError, setIsError] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [, setAccountInfo]  = useState<Account | null>(null);
+  const[, setIsError] = useState<boolean>(false)
+  const [, setErrorMessage] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [name, setName] = useState<string>('John Doe');
   const [phone, setPhone] = useState<string>('+353123456789');
