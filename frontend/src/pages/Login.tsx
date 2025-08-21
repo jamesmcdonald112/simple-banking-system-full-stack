@@ -7,7 +7,7 @@ import FormContainer from "../components/FormContainer";
 import PinInput from "../components/PinInput";
 import PasswordInput from "../components/PasswordInput";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function Login() {
@@ -81,13 +81,25 @@ export default function Login() {
         onChange={(e) => setPassword(e.target.value)}     
       />
 
-      {/* Submit */}
-      <Button 
-        type="submit"
-        disabled={isSubmitting}      
-      >
-        Login In
-      </Button>
+
+      <div className="flex justify-between items-center">
+        {/* Submit */}
+        <Button 
+          type="submit"
+          disabled={isSubmitting}      
+        >
+          Log In
+        </Button>
+
+        {/* Create an account */}
+        <Link 
+          to="/create-account" 
+          className="text-blue-500 hover:underline ml-4"
+        >
+          Create an account?
+        </Link>
+      </div>
+      
 
     </FormContainer>
   )
