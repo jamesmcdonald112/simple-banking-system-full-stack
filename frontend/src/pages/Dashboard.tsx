@@ -7,17 +7,15 @@ import { RiBankCardFill } from "react-icons/ri";
 import ActionButton from "../components/ActionButton";
 import FlipCardComponent from "../components/FlipCardComponent";
 import { useState } from "react";
-
+import TransferModal from "../components/TransferModal";
 
 export default function Dashboard() {
   const { account, logOut, logIn } = useAuth();
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [showAddMoney, setShowAddMoney] = useState(false);
-  if (!account) return null;
+  const [showTransfer, setShowTransfer] = useState(false);
 
-  function handleTransfer() {
-    // Placeholder for transfer logic
-  }
+  if (!account) return null;
 
   return (
     <Container>
@@ -50,7 +48,7 @@ export default function Dashboard() {
             <ActionButton
               icon={<FaArrowUp />}
               label="Transfer"
-              onClick={handleTransfer}
+              onClick={() => setShowTransfer(true)}
             />
           </div>
 
@@ -86,6 +84,9 @@ export default function Dashboard() {
             logIn({ ...account, ...(updated ?? {}), balance: newBalance });
           }}
         />
+
+        {/* Transfer Modal */}
+        <TransferModal open={showTransfer} onClose={() => setShowTransfer(false)} />
 
         <button onClick={logOut}>Log Out</button>
       </div>
