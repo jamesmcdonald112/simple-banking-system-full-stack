@@ -73,6 +73,18 @@ public class AccountService {
 
     }
 
+    public List<RecipientDTO> searchRecipients(String query) {
+        return this.accountRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
+                .stream()
+                .map(account -> new RecipientDTO(
+                        account.getId(),
+                        account.getName(),
+                        account.getEmail(),
+                        maskCard(account.getCardNumber())
+                ))
+                .toList();
+    }
+
     public void deleteAccountById(Long id) {
         if (!this.accountRepository.existsById(id)) {
             log.warn("Attempted to delete non-existent account with ID {}", id);
@@ -80,5 +92,9 @@ public class AccountService {
         }
         this.accountRepository.deleteById(id);
         log.info("Deleted account with ID {}", id);
+    }
+
+    private String maskCard(String cardNumber) {
+        return "****" + cardNumber.substring(cardNumber.length() - 4);
     }
 }
