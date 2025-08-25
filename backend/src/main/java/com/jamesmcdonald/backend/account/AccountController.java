@@ -24,6 +24,12 @@ public class AccountController {
         return this.accountService.getAllAccounts();
     }
 
+    @GetMapping("recipients")
+    public List<RecipientDTO> searchRecipients(@RequestParam String query) {
+        return this.accountService.searchRecipients(query);
+    }
+
+
     @PostMapping
     public AccountResponseDTO createAccount(@RequestBody @Valid AccountRequestDTO accountDto) {
         log.info("Received request to create account: {}", accountDto.email());
