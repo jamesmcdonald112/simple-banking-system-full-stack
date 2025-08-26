@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountTest {
 
     /**
-     * Ensures that newly created accounts have valid card numbers, pins, and a zero balance
+     * Ensures that newly created accounts have valid card numbers, PINs, and a zero balance
      */
     @Test
     void create_whenCalled_returnsAccountWithValidCardNumberAndPin() {
@@ -62,7 +62,7 @@ class AccountTest {
         assertEquals(
                 account1.hashCode(),
                 account2.hashCode(),
-                "Equal accounts must have the same hashCode");
+                "Equal accounts should have the same hashCode");
     }
 
     /**
@@ -83,12 +83,12 @@ class AccountTest {
         assertNotEquals(
                 account1.hashCode(),
                 account2.hashCode(),
-                "Different accounts must have different hashCodes"
+                "Different accounts should have different hashCodes"
         );
     }
 
     /**
-     * Ensures the toString method contains the id, card number and the balance
+     * Ensures the toString method contains the ID, card number and the balance
      */
     @Test
     void toString_shouldContainCardNumberAndBalance() {
@@ -97,7 +97,7 @@ class AccountTest {
 
         assertTrue(
                 result.contains(String.valueOf(account.getId())),
-                "The toString() method should contain the id"
+                "The toString() method should contain the ID"
         );
         String last4 = account.getCardNumber().substring(account.getCardNumber().length() - 4);
         assertTrue(
