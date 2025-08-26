@@ -8,6 +8,7 @@ import ActionButton from "../components/ActionButton";
 import FlipCardComponent from "../components/FlipCardComponent";
 import { useState } from "react";
 import TransferModal from "../components/TransferModal";
+import type { TransferResponse } from "../api/transfers";
 
 export default function Dashboard() {
   const { account, logOut, logIn } = useAuth();
@@ -86,7 +87,15 @@ export default function Dashboard() {
         />
 
         {/* Transfer Modal */}
-        <TransferModal open={showTransfer} onClose={() => setShowTransfer(false)} />
+       <TransferModal
+          open={showTransfer}
+          onClose={() => setShowTransfer(false)}
+          fromAccountId={account.id}
+          onSuccess={(r: TransferResponse) => {
+            const newFromBalance = Number(r.fromBalance);
+            logIn({ ...account, balance: newFromBalance });
+          }}
+        />
 
         <button onClick={logOut}>Log Out</button>
       </div>
