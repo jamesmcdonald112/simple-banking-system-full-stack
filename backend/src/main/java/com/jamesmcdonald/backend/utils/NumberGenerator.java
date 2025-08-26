@@ -2,6 +2,11 @@ package com.jamesmcdonald.backend.utils;
 
 import java.util.Random;
 
+/**
+ * Utility class for generating random numeric strings.
+ * This class provides methods to generate strings composed of random digits.
+ * It is intended for use in scenarios where random numeric sequences are required.
+ */
 public class NumberGenerator {
 
     /**

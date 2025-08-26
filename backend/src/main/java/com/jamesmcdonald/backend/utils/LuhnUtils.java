@@ -5,6 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
+/**
+ * A stateless utility class providing methods to validate and generate card numbers using the Luhn algorithm.
+ * <p>
+ * All methods in this class are static and thread-safe, making it suitable for use in concurrent environments.
+ * This utility is intended for use in generating or validating payment card numbers and similar identification numbers.
+ * </p>
+ */
 public class LuhnUtils {
 
     private static final Logger log = LoggerFactory.getLogger(LuhnUtils.class);
