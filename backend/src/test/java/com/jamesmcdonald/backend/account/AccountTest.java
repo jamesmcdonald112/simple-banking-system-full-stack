@@ -135,4 +135,28 @@ class AccountTest {
                 () -> account.addAmount(new BigDecimal("-0.01")));
     }
 
+
+    @Test
+    void subtractAmount_withPositiveValue_shouldDecreaseBalance() {
+        Account a = AccountTestUtils.generateTestAccount();
+        a.addAmount(new BigDecimal("50.00"));
+        a.subtractAmount(new BigDecimal("20.00"));
+        assertEquals(0, a.getBalance().compareTo(new BigDecimal("30.00")));
+    }
+
+    @Test
+    void subtractAmount_withNonPositive_shouldThrow() {
+        Account a = AccountTestUtils.generateTestAccount();
+        assertThrows(IllegalArgumentException.class,
+                () -> a.subtractAmount(new BigDecimal("0.00")));
+    }
+
+    @Test
+    void subtractAmount_insufficientFunds_shouldThrow() {
+        Account a = AccountTestUtils.generateTestAccount();
+        a.addAmount(new BigDecimal("10.00"));
+        assertThrows(IllegalArgumentException.class,
+                () -> a.subtractAmount(new BigDecimal("10.01")));
+    }
+
 }

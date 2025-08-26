@@ -85,6 +85,41 @@ public class AccountService {
                 .toList();
     }
 
+    @Transactional
+    public TransferResponseDTO transfer(Long fromId, Long toId, BigDecimal amount) {
+        if (fromId == null || toId == null || amount == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing transfer fields");
+        }
+        if (fromId.equals(toId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sender and recipient must be different");
+        }
+        if (amount.signum() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be positive");
+        }
+
+        Account from = accountRepository.findById(fromId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "From account not found"));
+        Account to = accountRepository.findById(toId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "To account not found"));
+
+        // Ensure sufficient funds
+        if (from.getBalance().compareTo(amount) < 0) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Insufficient funds");
+        }
+
+        // Perform transfer
+        from.subtractAmount(amount);
+        to.addAmount(amount);
+
+        return new TransferResponseDTO(
+                from.getId(),
+                to.getId(),
+                amount,
+                from.getBalance(),
+                to.getBalance()
+        );
+    }
+
     public void deleteAccountById(Long id) {
         if (!this.accountRepository.existsById(id)) {
             log.warn("Attempted to delete non-existent account with ID {}", id);
