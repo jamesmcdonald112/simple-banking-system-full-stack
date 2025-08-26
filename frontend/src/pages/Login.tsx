@@ -8,6 +8,7 @@ import PinInput from "../components/PinInput";
 import PasswordInput from "../components/PasswordInput";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 
 export default function Login() {
@@ -31,14 +32,37 @@ export default function Login() {
     setErrorMessage('')
     setIsSubmitting(true);
 
-    try {
-      const data = await userLogin({cardNumber, pin, password});      
-      logIn(data);
-      navigate("/dashboard")
-    } catch(error) {
-      const e = error as Error & { status?: number };
+    const payload = {
+      cardNumber: cardNumber.trim(),
+      pin: pin.trim(),
+      password: password
+    };
+    if (!payload.cardNumber || !payload.pin || !payload.password) {
+      setIsSubmitting(false);
       setIsError(true);
-      setErrorMessage(e.message || "Login failed");
+      setErrorMessage("Please fill in card number, PIN and password.");
+      toast.error("Please fill in card number, PIN and password.");
+      return;
+    }
+
+    try {
+      const data = await userLogin(payload);      
+      logIn(data);
+      toast.success("Logged in");
+      navigate("/dashboard")
+    } catch (error) {
+      const e = error as Error & { status?: number };
+      let message = e.message || "Login failed";
+      if (typeof e.status === "number") {
+        if (e.status === 401) {
+          message = "Invalid card number, PIN or password.";
+        } else if (e.status >= 500) {
+          message = "Server error. Please try again later.";
+        }
+      }
+      setIsError(true);
+      setErrorMessage(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false)
     }
@@ -46,11 +70,11 @@ export default function Login() {
 
   return (
     <FormContainer onSubmit={handleLogin}>
-      <Heading1>Login In</Heading1>
+      <Heading1>Log in</Heading1>
 
       {/* Error message */}
       {isError && (
-        <div className="rounded-md border border-red-500/50 bg-red-500/10 text-red-300 px-3 py-2 text-sm">
+        <div className="rounded-md border border-red-500/50 bg-red-50 text-red-800 px-3 py-2 text-sm" aria-live="polite">
           {errorMessage}
         </div>
       )}
@@ -78,23 +102,24 @@ export default function Login() {
       <PasswordInput         
         name="login-password"
         value={password} 
-        onChange={(e) => setPassword(e.target.value)}     
+        onChange={(e) => setPassword(e.target.value)}  
       />
 
 
-      <div className="flex justify-between items-center">
+      <div className="mt-4 flex flex-col gap-3">
         {/* Submit */}
-        <Button 
+        <Button
           type="submit"
-          disabled={isSubmitting}      
+          disabled={isSubmitting || !cardNumber.trim() || !pin.trim() || !password.trim()}
+          aria-busy={isSubmitting}
         >
-          Log In
+          {isSubmitting ? "Logging in…" : "Log in"}
         </Button>
 
         {/* Create an account */}
-        <Link 
-          to="/create-account" 
-          className="text-blue-500 hover:underline ml-4"
+        <Link
+          to="/create-account"
+          className="block text-center text-blue-500 hover:underline"
         >
           Create an account?
         </Link>

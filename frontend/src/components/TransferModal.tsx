@@ -30,9 +30,10 @@ export default function TransferModal({ open, onClose, fromAccountId, onSuccess 
     try {
       const data = await searchRecipients(query);
       setResults(data);
-    } catch (e: any) {
-      setError(e?.message ?? "Search failed");
-      toast.error(e?.message ?? "Search failed");
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Search failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -56,9 +57,10 @@ export default function TransferModal({ open, onClose, fromAccountId, onSuccess 
       onSuccess(result);
       toast.success(`Sent €${Number(value).toFixed(2)} to ${selected?.name}`);
       onClose();
-    } catch (e: any) {
-      setError(e?.message ?? "Transfer failed");
-      toast.error(e?.message ?? "Transfer failed");
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Transfer failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setSending(false);
     }

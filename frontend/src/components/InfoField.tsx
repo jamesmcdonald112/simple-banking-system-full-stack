@@ -8,7 +8,7 @@ type InfoFieldProps = {
 
 export default function InfoField({ label, icon, info }: InfoFieldProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <label className="label text-muted">{label}</label>
 
       <div className="input-icon-wrapper cursor-default">

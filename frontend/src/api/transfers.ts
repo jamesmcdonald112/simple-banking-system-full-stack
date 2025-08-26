@@ -1,6 +1,5 @@
 import { BASE_URL } from "../config";
 import type { ProblemDetail } from "../types/http";
-import toast from "react-hot-toast";
 
 export type TransferRequest = {
   fromAccountId: number;
@@ -16,25 +15,48 @@ export type TransferResponse = {
   toBalance: string | number;
 };
 
-export async function createTransfer(body: TransferRequest): Promise<TransferResponse> {
+export async function createTransfer(
+  body: TransferRequest,
+  opts: { signal?: AbortSignal } = {}
+): Promise<TransferResponse> {
   const res = await fetch(`${BASE_URL}/api/transfers`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    signal: opts.signal,
   });
 
   if (!res.ok) {
+    // Try to parse ProblemDetail; fall back to text
     let problem: ProblemDetail | undefined;
-    try { problem = await res.json(); } catch {}
-    const message = problem?.detail || problem?.title || "Transfer failed";
-    toast.error(message); 
-    const error = new Error(message) as Error & { status?: number; code?: string };
+    let fallbackText: string | undefined;
+
+    try {
+      problem = await res.json();
+    } catch {
+      try {
+        fallbackText = await res.text();
+      } catch {
+        // ignore
+      }
+    }
+
+    const message =
+      problem?.detail ||
+      problem?.title ||
+      fallbackText ||
+      `Transfer failed (${res.status} ${res.statusText})`;
+
+    const error = new Error(message) as Error & {
+      status?: number;
+      code?: string;
+      body?: unknown;
+    };
     error.status = res.status;
     if (problem?.code) error.code = problem.code;
+    error.body = problem ?? fallbackText;
     throw error;
   }
 
-  const result = (await res.json()) as TransferResponse;
-  toast.success("Transfer completed successfully"); 
-  return result;
+  return (await res.json()) as TransferResponse;
 }
