@@ -94,6 +94,16 @@ public class Account {
         this.balance = this.balance.add(amount);
     }
 
+    public void subtractAmount(BigDecimal amount) {
+        if (amount == null || amount.signum() <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        if (this.balance.compareTo(amount) < 0) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+        this.balance = this.balance.subtract(amount);
+    }
+
     // Getters
     public Long getId() {
         return id;
