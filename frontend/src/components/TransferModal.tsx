@@ -1,16 +1,21 @@
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import type { Recipient } from "../api/recipients";
 import { searchRecipients } from "../api/recipients";
+import { createTransfer, type TransferResponse } from "../api/transfers";
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  fromAccountId: number;                 
+  onSuccess: (r: TransferResponse) => void; 
 };
 
-export default function TransferModal({ open, onClose }: Props) {
+export default function TransferModal({ open, onClose, fromAccountId, onSuccess }: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Recipient[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [selected, setSelected] = useState<Recipient | null>(null);
@@ -27,15 +32,36 @@ export default function TransferModal({ open, onClose }: Props) {
       setResults(data);
     } catch (e: any) {
       setError(e?.message ?? "Search failed");
+      toast.error(e?.message ?? "Search failed");
     } finally {
       setLoading(false);
     }
   }
 
-  function handleSend() {
-    // TODO: replace with POST /api/transfers
-    console.log("Send", { to: selected, amount: Number(amount) });
-    onClose();
+  async function handleSend() {
+    if (!selected) return;
+    const value = Number(amount);
+    if (!value || value <= 0) {
+      setError("Please enter a valid amount");
+      return;
+    }
+    setError(null);
+    setSending(true);
+    try {
+      const result = await createTransfer({
+        fromAccountId,
+        toAccountId: selected.id,
+        amount: value,
+      });
+      onSuccess(result);
+      toast.success(`Sent €${Number(value).toFixed(2)} to ${selected?.name}`);
+      onClose();
+    } catch (e: any) {
+      setError(e?.message ?? "Transfer failed");
+      toast.error(e?.message ?? "Transfer failed");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -45,6 +71,8 @@ export default function TransferModal({ open, onClose }: Props) {
           <h3 className="text-lg font-semibold">Transfer</h3>
           <button onClick={onClose} className="text-sm text-gray-500 hover:text-black">Close</button>
         </div>
+
+        {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
 
         {!selected && (
           <div className="space-y-3">
@@ -60,14 +88,11 @@ export default function TransferModal({ open, onClose }: Props) {
                 className="px-4 py-2 rounded bg-black text-white hover:opacity-90 disabled:opacity-60"
                 disabled={loading || !query.trim()}
               >
-                Find
+                {loading ? "…" : "Find"}
               </button>
             </div>
 
-            {loading && <p className="text-sm text-gray-600">Searching…</p>}
-            {error && <p className="text-sm text-red-600">{error}</p>}
-
-            {!loading && !error && results.length > 0 && (
+            {!loading && results.length > 0 && (
               <ul className="border rounded divide-y max-h-60 overflow-auto">
                 {results.map((r) => (
                   <li
@@ -85,7 +110,7 @@ export default function TransferModal({ open, onClose }: Props) {
               </ul>
             )}
 
-            {!loading && !error && results.length === 0 && query.trim() && (
+            {!loading && results.length === 0 && query.trim() && (
               <p className="text-sm text-gray-500">No matches.</p>
             )}
           </div>
@@ -111,10 +136,10 @@ export default function TransferModal({ open, onClose }: Props) {
               />
               <button
                 className="px-4 py-2 rounded bg-black text-white hover:opacity-90 disabled:opacity-60"
-                disabled={!amount || Number(amount) <= 0}
+                disabled={sending || !amount || Number(amount) <= 0}
                 onClick={handleSend}
               >
-                Send
+                {sending ? "Sending…" : "Send"}
               </button>
             </div>
 

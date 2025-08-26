@@ -1,5 +1,6 @@
 import { BASE_URL } from "../config";
 import type { Account } from "../types/Account";
+import { toast } from "react-hot-toast";
 
 type createAccountProps = {
   name: string;
@@ -18,11 +19,12 @@ export async function createAccount({name, phone, email, password}: createAccoun
     body: JSON.stringify({name, email, phone, password})
   });
 
-   console.log(res)
-
   if (!res.ok) {
+    toast.error("Failed to create account");
     throw new Error("Failed to create account");
   }
+
+  toast.success("Account created successfully");
 
   return res.json();
 }

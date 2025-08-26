@@ -1,5 +1,6 @@
 import { BASE_URL } from "../config";
 import type { ProblemDetail } from "../types/http";
+import { toast } from "react-hot-toast";
 
 type LoginPayload = {
   cardNumber: string;
@@ -34,11 +35,14 @@ export async function userLogin(body: LoginPayload): Promise<LoginSuccess> {
     }
 
     const message = problem?.detail || problem?.title || "Login failed";
+    toast.error(message);
     const error = new Error(message) as Error & { status?: number; code?: string };
     error.status = res.status;
     if (problem?.code) error.code = problem.code;
     throw error;
   }
 
-  return res.json() as Promise<LoginSuccess>;
+  const result = await res.json() as LoginSuccess;
+  toast.success("Login successful");
+  return result;
 }
