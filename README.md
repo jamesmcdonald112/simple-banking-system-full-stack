@@ -7,6 +7,9 @@ This project demonstrates account management, authentication, deposits, transfer
 ⚠️ **Note:** For learning/demo purposes only. Passwords are stored in plain text (no hashing).
 
 ---
+## Live Demo
+- [Click here for a live demo](https://simple-banking-system-fullstack.netlify.app/login)
+---
 
 ## Features
 
