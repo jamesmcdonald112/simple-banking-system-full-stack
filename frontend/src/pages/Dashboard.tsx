@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import Container from "../components/Container";
 import { FaArrowUp, FaPlus, FaEuroSign } from "react-icons/fa6";
 import { RiBankCardFill } from "react-icons/ri";
+import { MdLogout } from "react-icons/md";
 import ActionButton from "../components/ActionButton";
 import FlipCardComponent from "../components/FlipCardComponent";
 import { useState } from "react";
@@ -34,7 +35,7 @@ export default function Dashboard() {
         />
 
         {/* Buttons */}
-        <div className="grid grid-cols-3 gap-4 w-full max-w-lg mx-auto mt-6 md:mt-8">
+        <div className="grid grid-cols-4 gap-4 w-full max-w-lg mx-auto mt-6 md:mt-8">
           {/* Add money */}
           <div className="transition-transform transform hover:scale-105 hover:shadow-lg">
             <ActionButton
@@ -74,7 +75,6 @@ export default function Dashboard() {
               />
             </div>
           )}
-        </div>
 
         {/* Add Money Modal */}
         <AddMoneyModal
@@ -97,7 +97,17 @@ export default function Dashboard() {
           }}
         />
 
-        <button onClick={logOut}>Log Out</button>
+        {/* Log Out */}
+        <div className="transition-transform transform hover:scale-105 hover:shadow-lg">
+          <ActionButton
+            icon={<MdLogout />}
+            label="Log Out"
+            onClick={logOut}
+          />
+        </div>
+      </div>
+
+      
       </div>
     </Container>
   );

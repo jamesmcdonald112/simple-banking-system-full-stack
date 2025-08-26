@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { Account } from "../types/Account";
 import { createAccount } from "../api/createAccount";
 import TextInput from "../components/TextInput";
 import { MdEmail, MdPerson, MdPhone } from 'react-icons/md'
@@ -10,24 +9,24 @@ import FormContainer from "../components/FormContainer";
 import Heading1 from "../components/Heading1";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 
 
 export default function CreateAccount() {
   
   // Local state management
-  const [, setAccountInfo]  = useState<Account | null>(null);
-  const[, setIsError] = useState<boolean>(false)
-  const [, setErrorMessage] = useState<string>('')
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [name, setName] = useState<string>('John Doe');
-  const [phone, setPhone] = useState<string>('+353123456789');
-  const [email, setEmail] = useState<string>('john@example.com');
-  const [password, setPassword] = useState<string>('password123');
+  const [name, setName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   const navigate = useNavigate()
 
-  // Hanlde form submission
+  // Handle form submission
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsError(false);
@@ -35,12 +34,29 @@ export default function CreateAccount() {
     setIsSubmitting(true);
 
     try {
-      const data = await createAccount({name, phone, email, password});
-      setAccountInfo(data);
+      const payload = {
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        password
+      };
+      // Basic client-side validation
+      if (!payload.name || !payload.email || !payload.phone || !payload.password) {
+        setIsError(true);
+        const msg = "Please fill in all required fields.";
+        setErrorMessage(msg);
+        toast.error(msg);
+        setIsSubmitting(false);
+        return;
+      }
+      const data = await createAccount(payload);
+      toast.success("Account created successfully");
       navigate("/account-created", {state: data})
-    } catch(error) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Failed to create account. Please try again.";
+      toast.error(msg);
       setIsError(true);
-      setErrorMessage("Failed to create account. Please try again")
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false)
     }
@@ -51,7 +67,23 @@ export default function CreateAccount() {
 //  Render Component
  return (
     <FormContainer onSubmit={handleSubmit}>
+      <div
+        className="mb-3 rounded border border-yellow-300 bg-yellow-50 text-yellow-800 px-3 py-2 text-sm"
+        aria-live="polite"
+        role="alert"
+      >
+        ⚠️ This is a test project. Please do not use real personal information. Note: The server may take up to 60 seconds to respond (free Render tier).
+      </div>
       <Heading1>Create Account</Heading1>      
+      {isError && (
+        <div
+          className="mb-3 rounded border border-red-300 bg-red-50 text-red-800 px-3 py-2 text-sm"
+          aria-live="polite"
+          role="alert"
+        >
+          {errorMessage}
+        </div>
+      )}
 
         {/* Name */}
         <TextInput 
@@ -94,18 +126,20 @@ export default function CreateAccount() {
           required={true}
         />
 
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 w-full">
           {/* Submit Button */}
           <Button
-          type="submit"
-            disabled={isSubmitting}
+            type="submit"
+            aria-busy={isSubmitting}
+            disabled={isSubmitting || !name.trim() || !email.trim() || !phone.trim() || !password.trim()}
+            aria-disabled={isSubmitting}
+            
           >
             {isSubmitting ? "Creating..." : "Create Account"}
-          </Button>    
-
-          <Link 
-            to="/login" 
-            className="text-blue-500 hover:underline ml-4"
+          </Button>
+          <Link
+            to="/login"
+            className="text-blue-500 hover:underline text-center"
           >
             Already have an account?
           </Link>

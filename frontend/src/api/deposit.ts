@@ -1,6 +1,5 @@
-// src/api/deposit.ts
 import { BASE_URL } from "../config";
-import { toast } from "react-hot-toast";
+import type { ProblemDetail } from "../types/http";
 
 export async function deposit(accountId: number, amount: number) {
   const res = await fetch(`${BASE_URL}/api/accounts/${accountId}/deposit`, {
@@ -10,12 +9,25 @@ export async function deposit(accountId: number, amount: number) {
   });
 
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    toast.error("Deposit failed");
-    throw new Error(`Deposit failed (${res.status} ${res.statusText}) ${text}`);
+    let problem: ProblemDetail | undefined;
+    try {
+      problem = (await res.json()) as ProblemDetail;
+    } catch {
+      // ignore parse errors. fall back to status text
+    }
+
+    const message =
+      problem?.detail ||
+      problem?.title ||
+      `Deposit failed (${res.status} ${res.statusText})`;
+
+    const error = new Error(message) as Error & { status?: number; code?: string };
+    error.status = res.status;
+    // Some of our problem payloads may include a custom code
+    if ((problem as any)?.code) error.code = (problem as any).code;
+
+    throw error;
   }
 
-  const data = await res.json();
-  toast.success(`Deposit of €${amount} successful`);
-  return data;
+  return res.json();
 }

@@ -22,51 +22,52 @@ export default function AccountCreated() {
   }, [location, navigate]);
 
   return (
-    <Container className="flex flex-col gap-2">
-      <Heading1>Account Created</Heading1>
+    <Container className="items-stretch">
+      <div className="w-full max-w-md mx-auto flex flex-col gap-3">
+        <Heading1>Account Created</Heading1>
 
-      {/* Name */}
-      <InfoField 
-        label="Name"
-        icon={<MdPerson />}
-        info={name}
-      />
+        {/* Name */}
+        <InfoField 
+          label="Name"
+          icon={<MdPerson />}
+          info={name}
+        />
 
-      {/* Email */}
-      <InfoField 
-        label="Email"
-        icon={<MdEmail />}
-        info={email}
-      />
+        {/* Email */}
+        <InfoField 
+          label="Email"
+          icon={<MdEmail />}
+          info={email}
+        />
 
-      {/* Phone */}
-      <InfoField 
-        label="Phone"
-        icon={<MdPhone />}
-        info={phone}
-      />
+        {/* Phone */}
+        <InfoField 
+          label="Phone"
+          icon={<MdPhone />}
+          info={phone}
+        />
 
-      {/* Card Number */}
-      <InfoField 
-        label="Card Number"
-        icon={<MdCreditCard />}
-        info={cardNumber}
-      />
+        {/* Card Number */}
+        <InfoField 
+          label="Card Number"
+          icon={<MdCreditCard />}
+          info={cardNumber}
+        />
 
-      {/* PIN */}
-      <InfoField 
-        label="PIN"
-        icon={<MdOutlineFiberPin />}
-        info={pin}
-      />
+        {/* PIN */}
+        <InfoField 
+          label="PIN"
+          icon={<MdOutlineFiberPin />}
+          info={pin}
+        />
 
-      <Button
-        type="button"
-        onClick={() => navigate("/login")}
-      >
-        Go To Login
-      </Button>
-
+        <Button
+          type="button"
+          onClick={() => navigate("/login")}
+        >
+          Go To Login
+        </Button>
+      </div>
     </Container>
   )
 }

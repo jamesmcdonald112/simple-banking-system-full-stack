@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import Button from "./Button";
 import type { Account } from "../types/Account";
@@ -21,7 +19,6 @@ export default function AddMoneyModal({ open, onClose, account, onDeposited }: P
 
   function validate(raw: string) {
     if (!raw) return "Enter an amount";
-    // Only numbers with up to 2 decimal places
     if (!/^\d+(\.\d{1,2})?$/.test(raw)) return "Use a valid amount (max 2 decimals)";
     const n = Number(raw);
     if (!(n > 0)) return "Amount must be greater than 0";
@@ -41,7 +38,6 @@ export default function AddMoneyModal({ open, onClose, account, onDeposited }: P
 
     try {
       const result = await deposit(account.id, Number(amount));
-      // prefer returned balance if present, else fall back
       const newBalance =
         typeof (result as any)?.balance === "number"
           ? (result as any).balance
@@ -51,8 +47,12 @@ export default function AddMoneyModal({ open, onClose, account, onDeposited }: P
       onClose();
       setAmount("");
     } catch (err) {
-      const e2 = err as Error & { status?: number };
-      setError(e2.message || "Deposit failed");
+      // 👇 Improvement: surface backend message if available
+      if (err instanceof Error) {
+        setError(err.message || "Deposit failed");
+      } else {
+        setError("Deposit failed. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }
