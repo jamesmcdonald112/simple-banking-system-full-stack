@@ -11,16 +11,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * Handles authentication requests for logging in.
+ */
 @RestController
 @RequestMapping("api/login")
 public class LoginController {
 
     private final LoginService loginService;
 
+    /**
+     * Constructs a LoginController with the given LoginService.
+     * @param loginService the service to handle login authentication logic
+     */
     public LoginController(LoginService loginService) {
         this.loginService = loginService;
     }
 
+    /**
+     * Authenticates users based on card number, PIN, and password.
+     * Returns account details if authentication is successful,
+     * otherwise returns a 401 Unauthorized response with a problem detail object.
+     *
+     * @param request the login request containing card number, PIN, and password
+     * @return ResponseEntity containing account details or an error response
+     */
     @PostMapping
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         return this.loginService.authenticate(

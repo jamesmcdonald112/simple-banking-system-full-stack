@@ -83,4 +83,25 @@ class LoginServiceTest {
                 fakeCardNumber,
                 fakePin);
     }
+
+    @Test
+    void authenticate_passwordMismatch_shouldReturnEmptyOptional() {
+        Account account = AccountTestUtils.generateTestAccount();
+
+        // Repo finds the account for card+PIN…
+        Mockito.when(accountRepository.findByCardNumberAndPin(
+                account.getCardNumber(),
+                account.getPin()
+        )).thenReturn(Optional.of(account));
+
+        // …but provided password is wrong.
+        Optional<Account> result = loginService.authenticate(
+                account.getCardNumber(),
+                account.getPin(),
+                "WRONG_PASSWORD"
+        );
+
+        assertTrue(result.isEmpty(), "Expected empty when password does not match");
+        Mockito.verify(accountRepository).findByCardNumberAndPin(account.getCardNumber(), account.getPin());
+    }
 }
