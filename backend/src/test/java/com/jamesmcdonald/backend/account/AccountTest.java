@@ -34,9 +34,9 @@ class AccountTest {
                 "PIN should be a 4-digit numeric string");
 
         assertEquals(
-                BigDecimal.ZERO,
-                account.getBalance(),
-                "Newly created accounts should have a balance of 0");
+                0,
+                account.getBalance().compareTo(new BigDecimal("0.00")),
+                "Newly created accounts should have a balance of 0.00");
     }
 
     /**
@@ -99,9 +99,10 @@ class AccountTest {
                 result.contains(String.valueOf(account.getId())),
                 "The toString() method should contain the id"
         );
+        String last4 = account.getCardNumber().substring(account.getCardNumber().length() - 4);
         assertTrue(
-                result.contains(account.getCardNumber()),
-                "The toString() method should contain the card number");
+                result.contains("****" + last4),
+                "The toString() method should show masked card (****last4)");
 
         assertTrue(
                 result.contains(String.valueOf(account.getBalance())),
@@ -159,4 +160,11 @@ class AccountTest {
                 () -> a.subtractAmount(new BigDecimal("10.01")));
     }
 
+    @Test
+    void addAmount_roundsHalfUpToTwoDecimals() {
+        Account a = AccountTestUtils.generateTestAccount();
+        a.addAmount(new BigDecimal("1"));
+        a.addAmount(new BigDecimal("0.005")); // should round up to 0.01
+        assertEquals(0, a.getBalance().compareTo(new BigDecimal("1.01")));
+    }
 }

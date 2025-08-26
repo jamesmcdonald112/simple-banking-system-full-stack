@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
@@ -79,7 +80,7 @@ public class Account {
         return new Account(
                 CardNumberGenerator.generateCardNumber(),
                 PinGenerator.generatePin(),
-                BigDecimal.ZERO,
+                BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP),
                 name,
                 email,
                 phone,
@@ -88,20 +89,16 @@ public class Account {
     }
 
     public void addAmount(BigDecimal amount) {
-        if (amount.signum() <= 0) {
-            throw new IllegalArgumentException("Amount must be > 0");
-        }
-        this.balance = this.balance.add(amount);
+        Objects.requireNonNull(amount, "Amount must not be null");
+        if (amount.signum() <= 0) throw new IllegalArgumentException("Amount must be > 0");
+        this.balance = this.balance.add(amount).setScale(2, RoundingMode.HALF_UP);
     }
 
     public void subtractAmount(BigDecimal amount) {
-        if (amount == null || amount.signum() <= 0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
-        if (this.balance.compareTo(amount) < 0) {
-            throw new IllegalArgumentException("Insufficient balance");
-        }
-        this.balance = this.balance.subtract(amount);
+        Objects.requireNonNull(amount, "Amount must not be null");
+        if (amount.signum() <= 0) throw new IllegalArgumentException("Amount must be positive");
+        if (this.balance.compareTo(amount) < 0) throw new IllegalArgumentException("Insufficient balance");
+        this.balance = this.balance.subtract(amount).setScale(2, RoundingMode.HALF_UP);
     }
 
     // Getters
@@ -153,15 +150,16 @@ public class Account {
 
     @Override
     public String toString() {
+        String last4 = (cardNumber != null && cardNumber.length() >= 4)
+                ? cardNumber.substring(cardNumber.length() - 4)
+                : "****";
         return "Account{" +
                 "id=" + id +
-                ", cardNumber='" + cardNumber + '\'' +
-                ", pin='" + pin + '\'' +
+                ", cardNumber='****" + last4 + '\'' +
                 ", balance=" + balance +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }
