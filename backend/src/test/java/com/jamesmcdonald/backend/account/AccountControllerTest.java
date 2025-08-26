@@ -100,4 +100,62 @@ class AccountControllerTest {
         mockMvc.perform(delete("/api/accounts/" + nonExistentId))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void searchRecipients_shouldReturnMatchingRecipients() throws Exception {
+        String query = "ja";
+        List<RecipientDTO> results = List.of(
+                new RecipientDTO(1L, "Jane Doe", "jane@example.com", "0012"),
+                new RecipientDTO(2L, "Jake Ryan", "jake@example.com", "0045")
+        );
+
+        Mockito.when(accountService.searchRecipients(query)).thenReturn(results);
+
+        mockMvc.perform(get("/api/accounts/recipients").param("query", query))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(results.size()))
+                .andExpect(jsonPath("$[0].name").value("Jane Doe"))
+                .andExpect(jsonPath("$[0].email").value("jane@example.com"))
+                .andExpect(jsonPath("$[0].cardNumberLast4Digits").value("0012"))
+                .andExpect(jsonPath("$[1].name").value("Jake Ryan"))
+                .andExpect(jsonPath("$[1].email").value("jake@example.com"))
+                .andExpect(jsonPath("$[1].cardNumberLast4Digits").value("0045"));
+
+        Mockito.verify(accountService).searchRecipients(query);
+    }
+
+    @Test
+    void deposit_shouldReturnUpdatedAccountResponse() throws Exception {
+        Long id = 42L;
+        BigDecimal amount = new BigDecimal("25.00");
+
+        AccountResponseDTO dto = new AccountResponseDTO(
+                id,
+                "4000000000000012",
+                "1234",
+                "John Smith",
+                "john@example.com",
+                "07123456789",
+                new BigDecimal("125.00")
+        );
+
+        Mockito.when(accountService.deposit(id, amount)).thenReturn(dto);
+
+        String requestBody = """
+            {
+              "amount": %s
+            }
+            """.formatted(amount.toPlainString());
+
+        mockMvc.perform(post("/api/accounts/{id}/deposit", id)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value("John Smith"))
+                .andExpect(jsonPath("$.email").value("john@example.com"))
+                .andExpect(jsonPath("$.balance").value(125.0));
+
+        Mockito.verify(accountService).deposit(id, amount);
+    }
 }
