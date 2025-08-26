@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -116,9 +117,9 @@ class AccountServiceTest {
                         .findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase("ja", "ja"))
                 .thenReturn(List.of(a));
 
-        var result = accountService.searchRecipients("ja");
+        List<RecipientDTO> result = accountService.searchRecipients("ja");
         assertEquals(1, result.size());
-        var r = result.get(0);
+        RecipientDTO r = result.get(0);
         assertEquals(a.getName(), r.name());
         assertEquals(a.getEmail(), r.email());
         assertTrue(r.cardNumberLast4Digits().matches("\\*{4}\\d{4}"));
@@ -126,7 +127,7 @@ class AccountServiceTest {
 
     private static void setId(Account account, long id) {
         try {
-            java.lang.reflect.Field f = Account.class.getDeclaredField("id");
+            Field f = Account.class.getDeclaredField("id");
             f.setAccessible(true);
             f.set(account, id);
         } catch (ReflectiveOperationException e) {

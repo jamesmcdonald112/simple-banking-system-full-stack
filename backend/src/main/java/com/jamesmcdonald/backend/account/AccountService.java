@@ -13,6 +13,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Service layer for account operations including CRUD, deposit, search, and transfer.
+ */
 @Service
 public class AccountService {
     private static final Logger log = LoggerFactory.getLogger(AccountService.class);
@@ -22,10 +25,25 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
+    /**
+     * Retrieves all accounts.
+     *
+     * @return a list of all Account entities.
+     */
     public List<Account> getAllAccounts() {
         return this.accountRepository.findAll();
     }
 
+    /**
+     * Creates and saves a new account.
+     *
+     * @param name the account holder's name
+     * @param email the account holder's email
+     * @param phone the account holder's phone number
+     * @param password the account password
+     * @return an AccountResponseDTO representing the saved account
+     * @throws ResponseStatusException if email is already in use
+     */
     public AccountResponseDTO createAndSaveAccount(String name, String email, String phone, String password) {
         Account account = Account.create(name, email, phone, password);
         log.info("Creating new account with card number: {}", account.getCardNumber());
@@ -53,6 +71,14 @@ public class AccountService {
         }
     }
 
+    /**
+     * Deposits an amount into the specified account.
+     *
+     * @param id the account ID
+     * @param amount the amount to deposit
+     * @return an AccountResponseDTO with updated account details
+     * @throws ResponseStatusException if account not found
+     */
     @Transactional
     public AccountResponseDTO deposit(Long id, BigDecimal amount) {
         Account account = accountRepository.findById(id)
@@ -73,6 +99,12 @@ public class AccountService {
 
     }
 
+    /**
+     * Searches for recipients by name or email containing the query string.
+     *
+     * @param query the search query
+     * @return a list of RecipientDTO matching the query
+     */
     public List<RecipientDTO> searchRecipients(String query) {
         return this.accountRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
                 .stream()
@@ -85,6 +117,15 @@ public class AccountService {
                 .toList();
     }
 
+    /**
+     * Transfers an amount from one account to another.
+     *
+     * @param fromId the sender account ID
+     * @param toId the recipient account ID
+     * @param amount the amount to transfer
+     * @return a TransferResponseDTO summarising the transfer
+     * @throws ResponseStatusException if any validation or balance checks fail
+     */
     @Transactional
     public TransferResponseDTO transfer(Long fromId, Long toId, BigDecimal amount) {
         if (fromId == null || toId == null || amount == null) {
@@ -120,6 +161,12 @@ public class AccountService {
         );
     }
 
+    /**
+     * Deletes an account by its ID.
+     *
+     * @param id the ID of the account to delete
+     * @throws ResponseStatusException if account does not exist
+     */
     public void deleteAccountById(Long id) {
         if (!this.accountRepository.existsById(id)) {
             log.warn("Attempted to delete non-existent account with ID {}", id);
@@ -129,6 +176,12 @@ public class AccountService {
         log.info("Deleted account with ID {}", id);
     }
 
+    /**
+     * Masks a card number to show only the last 4 digits.
+     *
+     * @param cardNumber the full card number
+     * @return masked card number string
+     */
     private String maskCard(String cardNumber) {
         return "****" + cardNumber.substring(cardNumber.length() - 4);
     }
