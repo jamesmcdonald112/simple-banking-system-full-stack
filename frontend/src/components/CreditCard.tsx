@@ -44,7 +44,7 @@ export default function CreditCard({cardNumber, expiry, cvv}: CreditCardProps) {
       </div>
 
        {/* Card Number */}
-      <div className="flex justify-between text-3xl tracking-widest">
+      <div className="flex justify-between text-2xl tracking-widest">
         {formatCardNumberDisplay(cardNumber || '')
           .split(' ')
           .map((group, i) => (
