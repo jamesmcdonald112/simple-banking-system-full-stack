@@ -102,6 +102,8 @@ Card numbers follow the standard 16-digit credit card format, generated in three
 
 ## 🖥 Frontend UX
 
+## [Based Roughly On This Figma File (Click here)](https://www.figma.com/design/HUkzEQHgwRSxrZaJZn3zp6/Free-Banking-Mobile-App-Ui-Kit-With-light---Dark-Mode-High-Quality-Ui-43--Screen-template--Community---Copy-?node-id=1-4&p=f&t=UrrMFSnJK6KO8eGf-0)
+
 - **Create Account** — form validation, inline error banners, toast notifications  
 - **Account Created** — shows generated card + PIN  
 - **Login** — card, PIN, password with error banners  
@@ -127,3 +129,4 @@ Covers:
 
 **Frontend**
 	•	Manual/integration testing (React Testing Library ready)
+
